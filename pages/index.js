@@ -46,7 +46,7 @@ export default class Index extends React.Component {
 
   socketSetup() {
     if (!this.socket) {
-      this.socket = io("http://192.168.99.226:3001");
+      this.socket = io("https://dwc-server-prototype.herokuapp.com/");
       this.socket.on('acquireCreature', this.acquireCreature)
       this.heartbeatInterval = setInterval(() => {
         if (!this.socket) return

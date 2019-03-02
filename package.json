@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "export": "next build && next export",
+    "sync:s3": "AWS_DEFAULT_PROFILE=cezar aws s3 sync out s3://dwc-client-prototype",
+    "deploy": "npm run export && npm run sync:s3"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +19,7 @@
     "animated": "^0.2.2",
     "less": "^3.9.0",
     "next": "^8.0.3",
+    "puppeteer": "^1.12.2",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
     "socket.io": "^2.2.0"
