@@ -12,3 +12,5 @@ Run `npm run dev` in order to start the development server.
 
 Run `npm run export` in order to generate a static site.
 
+Note: The websocket server is currently hardcoded in `index.js`. I'll make sure to update that.
+
