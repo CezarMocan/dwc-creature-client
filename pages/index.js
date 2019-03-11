@@ -50,6 +50,7 @@ export default class Index extends React.Component {
       this.socket.on('acquireCreature', this.acquireCreature)
       this.heartbeatInterval = setInterval(() => {
         if (!this.socket) return
+        // if (document.hasFocus())
         this.socket.emit('heartbeat')
       }, 3000)
     }

@@ -36,7 +36,7 @@ export default class CreatureComponent extends React.Component {
   updateCreaturePosition() {
     if (!this._e) return
 
-    const creatureYOffset = this.props.creatureId * 100
+    const creatureYOffset = this.props.creatureId * 50
 
     this.anim.x += 0.5
     this.anim.rotation += 1
@@ -75,9 +75,9 @@ export default class CreatureComponent extends React.Component {
   }
 
   render() {
-    const { isActive } = this.props
+    const { isActive, creatureId } = this.props
     return (
-      <div className={`creature ${isActive ? '' : 'hidden'}`} ref={(e) => {this.onRef(e)}}></div>
+      <div className={`creature ${isActive ? '' : 'hidden'}`} ref={(e) => {this.onRef(e)}}>{creatureId}</div>
     )
   }
 }
