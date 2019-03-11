@@ -36,7 +36,7 @@ export default class CreatureComponent extends React.Component {
   updateCreaturePosition() {
     if (!this._e) return
 
-    const creatureYOffset = this.props.creatureId * 10
+    const creatureYOffset = this.props.creatureId * 100
 
     this.anim.x += 0.5
     this.anim.rotation += 1
@@ -56,6 +56,11 @@ export default class CreatureComponent extends React.Component {
     } else {
       requestAnimationFrame(this.update)
     }
+  }
+
+  shouldComponentUpdate(newProps) {
+    if (newProps.isActive != this.props.isActive) return true
+    return false
   }
 
   componentDidUpdate(oldProps) {
