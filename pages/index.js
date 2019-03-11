@@ -5,6 +5,7 @@ import io from 'socket.io-client'
 import Style from '../static/styles/main.less'
 import Head from '../components/Head'
 import Creature from '../components/Creature'
+import server from '../config/server'
 
 export default class Index extends React.Component {
   constructor(props) {
@@ -46,7 +47,8 @@ export default class Index extends React.Component {
 
   socketSetup() {
     if (!this.socket) {
-      this.socket = io("https://dwc-server-prototype.herokuapp.com/");
+      // this.socket = io("https://dwc-server-prototype.herokuapp.com/");
+      this.socket = io(server.address);
       this.socket.on('acquireCreature', this.acquireCreature)
       this.heartbeatInterval = setInterval(() => {
         if (!this.socket) return
