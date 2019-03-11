@@ -35,31 +35,34 @@ export default class CreatureComponent extends React.Component {
 
   updateCreaturePosition() {
     if (!this._e) return
+
+    const creatureYOffset = this.props.creatureId * 10
+
     this.anim.x += 0.5
     this.anim.rotation += 1
 
-    this._e.style.transform = `translateX(${this.anim.x}px) translateY(${this.anim.y}px) rotate(${this.anim.rotation}deg)`
+    this._e.style.transform = `translateX(${this.anim.x}px) translateY(${this.anim.y + creatureYOffset}px) rotate(${this.anim.rotation}deg)`
   }
 
   update() {
-    const { isActive } = this.props
+    const { isActive, onExit, creatureId } = this.props
     if (!isActive) return
 
     this.updateCreaturePosition()
 
     if (this.outOfBounds()) {
       this.resetPosition()
-      this.props.onExit()
+      onExit(creatureId)
     } else {
       requestAnimationFrame(this.update)
     }
   }
 
   componentDidUpdate(oldProps) {
-    const { isActive, position } = this.props
+    const { isActive } = this.props
     if (isActive && !oldProps.isActive) {
-      this.anim.x = position.x
-      this.anim.y = position.y
+      this.anim.x = 0
+      this.anim.y = 0
       this.update()
     } else if (!isActive && oldProps.isActive) {
       
@@ -76,5 +79,6 @@ export default class CreatureComponent extends React.Component {
 
 CreatureComponent.defaultProps = {
   onExit: () => {},
-  isActive: false
+  isActive: false,
+  creatureId: 0
 }

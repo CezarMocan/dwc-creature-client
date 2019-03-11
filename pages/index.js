@@ -14,7 +14,7 @@ export default class Index extends React.Component {
     this.onVisibilityChange = this.onVisibilityChange.bind(this)
 
     this.state = {
-      isActive: false
+      creatures: {}
     }
   }
 
@@ -56,7 +56,7 @@ export default class Index extends React.Component {
   }
 
   socketTeardown() {
-    this.setState({ isActive: false })
+    this.setState({ creatures: {} })
     if (this.socket) {
       this.socket.disconnect()
       this.socket = null
@@ -66,26 +66,45 @@ export default class Index extends React.Component {
     }
   }
 
-  acquireCreature(position) {
-    console.log('acquireCreature: ', position)
-    this.setState({ isActive: true, position: position })
+  acquireCreature({ creatureId }) {
+    console.log('acquireCreature: ', creatureId)
+
+    const { creatures } = this.state
+    this.setState({
+      creatures: {
+        ...creatures,
+        [creatureId]: true
+      }
+    })
   }
 
-  onCreatureExit() {
-    console.log('Exited')
-    this.setState({ isActive: false })
+  onCreatureExit(creatureId) {
+    const { creatures } = this.state
+    this.setState({
+      creatures: {
+        ...creatures,
+        [creatureId]: false
+      }
+    })
 
     if (this.socket) {
-      this.socket.emit('creatureExit', { x: 1, y: 0.5 })
+      this.socket.emit('creatureExit', { creatureId })
     }
   }
 
   render() {
-    const { isActive, position } = this.state
+    const { creatures } = this.state
+
     return (
       <div>
         <Head/>
-        <Creature isActive={isActive} position={position} onExit={this.onCreatureExit}/>
+        {
+          Object.keys(creatures).map((creatureId, index) => {
+            return (
+              <Creature key={index} creatureId={creatureId} isActive={creatures[creatureId]} onExit={this.onCreatureExit}/>
+            )
+          })
+        }
       </div>
     )
   }
