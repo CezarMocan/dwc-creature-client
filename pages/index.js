@@ -1,6 +1,5 @@
 import React from 'react'
 import Link from 'next/link'
-// import ifvisible from 'ifvisible.js' 
 import io from 'socket.io-client'
 import Style from '../static/styles/main.less'
 import Head from '../components/Head'
@@ -47,7 +46,6 @@ export default class Index extends React.Component {
 
   socketSetup() {
     if (!this.socket) {
-      // this.socket = io("https://dwc-server-prototype.herokuapp.com/");
       this.socket = io(server.address);
       this.socket.on('acquireCreature', this.acquireCreature)
       this.heartbeatInterval = setInterval(() => {
