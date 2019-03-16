@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
+import classnames from 'classnames'
 import io from 'socket.io-client'
 import Style from '../static/styles/main.less'
 import Head from '../components/Head'
@@ -106,11 +107,21 @@ export default class Index extends React.Component {
   }
 
   render() {
-    const { creatures } = this.state
+    const { creatures, gardenConfig } = this.state
+    const gardenName = gardenConfig.localGarden ? gardenConfig.localGarden.name : ''
+    const backgroundClass = classnames({
+      "garden-info": true,
+      [gardenName]: true
+    })
 
     return (
       <div>
         <Head/>
+        { gardenConfig.localGarden && 
+          <div className={backgroundClass}>
+            <h1 className="garden-heading">garden—{ gardenConfig.localGarden.name}</h1>
+          </div>
+        }
         {
           Object.keys(creatures).map((creatureId, index) => {
             return (

@@ -4,6 +4,9 @@ import PNGSequencePlayer, { GlobalTicker } from './PNGSequencePlayer'
 
 const NO_LOOPING_FRAMES = 8
 
+const getInitialX = () => -100
+const getInitialY = () => window.innerHeight ? (window.innerHeight / 2 - 50) : 250
+
 export default class CreatureComponent extends React.Component {
   constructor(props) {
     super(props)
@@ -11,16 +14,17 @@ export default class CreatureComponent extends React.Component {
     this.update = this.update.bind(this)
 
     this.anim = {
-      x: 0,
-      y: window.innerHeight ? window.innerHeight / 2 : 250,
+      x: getInitialX(),
+      y: getInitialY(),
       rotation: 0,
       rotationSgn: 1
     }
   }
 
   resetPosition() {
-    this.anim.x = 0
-    this.anim.y = window.innerHeight / 2
+    this.anim.x = getInitialX()
+    this.anim.y = getInitialY()
+    console.log('Reset y: ', this.anim.y)
   }
 
   startTicker() {
@@ -45,8 +49,8 @@ export default class CreatureComponent extends React.Component {
   }
 
   outOfBounds() {
-    if (this.anim.x < 0) return true
-    if (this.anim.y < 0) return true
+    // if (this.anim.x < -100) return true
+    // if (this.anim.y < 0) return true
     if (this.anim.x > window.innerWidth) return true
     if (this.anim.y > window.innerHeight) return true
     return false
@@ -55,12 +59,12 @@ export default class CreatureComponent extends React.Component {
   updateCreaturePosition() {
     if (!this._e) return
 
-    const creatureYOffset = this.props.creatureId * 50
+    const creatureYOffset = 0//this.props.creatureId * 50
 
     const time = Date.now()
 
-    this.anim.x += 2
-    // this.anim.y += Math.sin(time) * 2
+    this.anim.x += 4
+    this.anim.y += Math.sin(time / 10) * 2
 
     this.anim.rotation += Math.abs(Math.sin(time) * Math.cos(time)) * this.anim.rotationSgn
     if (Math.abs(this.anim.rotation) > 10) {
@@ -93,9 +97,7 @@ export default class CreatureComponent extends React.Component {
   componentDidUpdate(oldProps) {
     const { isActive } = this.props
     if (isActive && !oldProps.isActive) {
-      this.anim.x = 0
-      this.anim.y = 0
-      // this.update()
+      this.resetPosition()
       this.startTicker()
     } else if (!isActive && oldProps.isActive) {
       this.stopTicker()
