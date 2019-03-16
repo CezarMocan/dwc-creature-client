@@ -1,7 +1,7 @@
 .creature {
-  width: 50px;
+  width: 150px;
   height: 35px;
-  border: 1px solid black;
+  border: 0px solid black;
   border-radius: ~"100px / 70px";
   background-color: transparent;
   position: absolute;
@@ -14,4 +14,20 @@
 
 .hidden {
   visibility: hidden;
+}
+
+// PNG sequence player
+
+.png-sequence-container {
+  position: relative;  
+  img.image-in-sequence {
+    width: 100%;
+    top: 0;
+    left: 0;
+    display: none;
+
+    &.image-in-sequence-active {
+      display: block;
+    }
+  }
 }

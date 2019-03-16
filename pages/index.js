@@ -11,10 +11,12 @@ export default class Index extends React.Component {
     super(props)
     this.onCreatureExit = this.onCreatureExit.bind(this)
     this.acquireCreature = this.acquireCreature.bind(this)
+    this.onReceivedGardenInfo = this.onReceivedGardenInfo.bind(this)
     this.onVisibilityChange = this.onVisibilityChange.bind(this)
 
     this.state = {
-      creatures: {}
+      creatures: {},
+      gardenConfig: {}
     }
   }
 
@@ -47,6 +49,7 @@ export default class Index extends React.Component {
   socketSetup() {
     if (!this.socket) {
       this.socket = io(server.address);
+      this.socket.on('gardenInfo', this.onReceivedGardenInfo)
       this.socket.on('acquireCreature', this.acquireCreature)
       this.heartbeatInterval = setInterval(() => {
         if (!this.socket) return
@@ -65,6 +68,14 @@ export default class Index extends React.Component {
     if (this.heartbeatInterval) {
       clearInterval(this.heartbeatInterval)
     }
+  }
+
+  onReceivedGardenInfo({ localGarden, remoteGardens }) {
+    console.log('Local: ', localGarden)
+    console.log('Remote: ', remoteGardens)
+    this.setState({
+      gardenConfig: { localGarden, remoteGardens }
+    })
   }
 
   acquireCreature({ creatureId }) {
@@ -89,7 +100,8 @@ export default class Index extends React.Component {
     })
 
     if (this.socket) {
-      this.socket.emit('creatureExit', { creatureId })
+      const localGardenName = this.state.gardenConfig.localGarden ? this.state.gardenConfig.localGarden.name : undefined
+      this.socket.emit('creatureExit', { creatureId, nextGarden: localGardenName })
     }
   }
 

@@ -1,5 +1,8 @@
 import React from 'react'
 import Head from 'next/head'
+import PNGSequencePlayer, { GlobalTicker } from './PNGSequencePlayer'
+
+const NO_LOOPING_FRAMES = 8
 
 export default class CreatureComponent extends React.Component {
   constructor(props) {
@@ -9,20 +12,36 @@ export default class CreatureComponent extends React.Component {
 
     this.anim = {
       x: 0,
-      y: 0,
-      rotation: 0
+      y: window.innerHeight ? window.innerHeight / 2 : 250,
+      rotation: 0,
+      rotationSgn: 1
     }
   }
 
   resetPosition() {
     this.anim.x = 0
-    this.anim.y = 0
+    this.anim.y = window.innerHeight / 2
+  }
+
+  startTicker() {
+    if (!this._tickerId)
+      this._tickerId = GlobalTicker.registerListener(this.update)
+  }
+
+  stopTicker() {
+    if (!this._tickerId) return
+    GlobalTicker.unregisterListener(this._tickerId)
+    this._tickerId = null
   }
 
   onRef(e) {
+    this.resetPosition()
     this._e = e
     const { isActive } = this.props
-    if (isActive) this.update()
+    if (isActive) {
+      console.log('onRef registerListener')
+      this.startTicker()
+    }
   }
 
   outOfBounds() {
@@ -38,8 +57,15 @@ export default class CreatureComponent extends React.Component {
 
     const creatureYOffset = this.props.creatureId * 50
 
-    this.anim.x += 0.5
-    this.anim.rotation += 1
+    const time = Date.now()
+
+    this.anim.x += 2
+    // this.anim.y += Math.sin(time) * 2
+
+    this.anim.rotation += Math.abs(Math.sin(time) * Math.cos(time)) * this.anim.rotationSgn
+    if (Math.abs(this.anim.rotation) > 10) {
+      this.anim.rotationSgn *= -1
+    }
 
     this._e.style.transform = `translateX(${this.anim.x}px) translateY(${this.anim.y + creatureYOffset}px) rotate(${this.anim.rotation}deg)`
   }
@@ -53,8 +79,9 @@ export default class CreatureComponent extends React.Component {
     if (this.outOfBounds()) {
       this.resetPosition()
       onExit(creatureId)
+      this.stopTicker()
     } else {
-      requestAnimationFrame(this.update)
+      // requestAnimationFrame(this.update)
     }
   }
 
@@ -68,16 +95,31 @@ export default class CreatureComponent extends React.Component {
     if (isActive && !oldProps.isActive) {
       this.anim.x = 0
       this.anim.y = 0
-      this.update()
+      // this.update()
+      this.startTicker()
     } else if (!isActive && oldProps.isActive) {
-      
+      this.stopTicker()
     }
+  }
+
+  componentWillUnmount() {
+    this.stopTicker()
   }
 
   render() {
     const { isActive, creatureId } = this.props
     return (
-      <div className={`creature ${isActive ? '' : 'hidden'}`} ref={(e) => {this.onRef(e)}}>{creatureId}</div>
+      <div className={`creature ${isActive ? '' : 'hidden'}`} ref={(e) => {this.onRef(e)}}>
+        {creatureId}
+        <PNGSequencePlayer
+          loopImages={[...Array(NO_LOOPING_FRAMES).keys()].map(k => `/static/images/creature1/${k}.png`)}
+          isPlaying={true}
+          loop={true}
+          className="creature-1"
+          inViewport={true}
+        />
+
+      </div>
     )
   }
 }
