@@ -93,6 +93,7 @@ export default class Index extends React.Component {
 
   onCreatureExit(creatureId) {
     const { creatures } = this.state
+    console.log('onCreatureExit: ', creatureId)
     this.setState({
       creatures: {
         ...creatures,
@@ -124,9 +125,7 @@ export default class Index extends React.Component {
         }
         {
           Object.keys(creatures).map((creatureId, index) => {
-            return (
-              <Creature key={index} creatureId={creatureId} isActive={creatures[creatureId]} onExit={this.onCreatureExit}/>
-            )
+            return <Creature key={creatureId} creatureId={creatureId} isActive={creatures[creatureId]} onExit={this.onCreatureExit}/>
           })
         }
       </div>

@@ -24,7 +24,6 @@ export default class CreatureComponent extends React.Component {
   resetPosition() {
     this.anim.x = getInitialX()
     this.anim.y = getInitialY()
-    console.log('Reset y: ', this.anim.y)
   }
 
   startTicker() {
@@ -96,6 +95,7 @@ export default class CreatureComponent extends React.Component {
 
   componentDidUpdate(oldProps) {
     const { isActive } = this.props
+    console.log('componentDidUpdate: ', this.props.isActive, oldProps.isActive, this.props.creatureId)
     if (isActive && !oldProps.isActive) {
       this.resetPosition()
       this.startTicker()
@@ -108,6 +108,10 @@ export default class CreatureComponent extends React.Component {
     this.stopTicker()
   }
 
+  componentDidMount() {
+    console.log('Creature componentDidMount')
+  }
+
   render() {
     const { isActive, creatureId } = this.props
     return (
@@ -115,7 +119,7 @@ export default class CreatureComponent extends React.Component {
         {creatureId}
         <PNGSequencePlayer
           loopImages={[...Array(NO_LOOPING_FRAMES).keys()].map(k => `/static/images/creature1/${k}.png`)}
-          isPlaying={true}
+          isPlaying={isActive}
           loop={true}
           className="creature-1"
           inViewport={true}

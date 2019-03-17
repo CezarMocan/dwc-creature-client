@@ -110,11 +110,9 @@ class Ticker {
   registerListener(l) {
     const key = ++this.listenersCount
     this.listeners[key] = l
-    console.log('Register: ', key, this.listeners)
     return key
   }
   unregisterListener(key) {
-    console.log('Unregister: ', key, this.listeners)
     if (!this.listeners[key]) return
     delete this.listeners[key]
   }
