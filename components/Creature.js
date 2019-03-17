@@ -3,7 +3,7 @@ import Head from 'next/head'
 import classnames from 'classnames'
 import PNGSequencePlayer, { GlobalTicker } from './PNGSequencePlayer'
 
-const CREATURE_TAP_STOP_TIME = 30
+const CREATURE_TAP_STOP_TIME = 10
 const NO_LOOPING_FRAMES = 8
 
 const getInitialX = () => -100
@@ -44,7 +44,7 @@ export default class CreatureComponent extends React.Component {
 
   onGardenNameClick(gardenName, evt) {
     evt.stopPropagation()
-    
+
     this.setState({ nextGarden: gardenName }, () => {
       setTimeout(() => {
         this.setState({ tapped: false })
@@ -108,6 +108,7 @@ export default class CreatureComponent extends React.Component {
 
   getNextGarden() {
     const localGardenName = this.props.gardenConfig.localGarden ? this.props.gardenConfig.localGarden.name : undefined
+    return (this.state.nextGarden || localGardenName)
   }
 
   update() {
