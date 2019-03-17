@@ -54,11 +54,27 @@ h1.garden-heading {
   top: 0;
   visibility: visible;
   text-align: center;
-  line-height: 25px;
+  cursor: pointer;
+  // line-height: 25px;
 }
 
 .hidden {
   visibility: hidden;
+}
+
+.creature-interaction-dialog {
+  .prompt {
+    margin-bottom: 7px;
+  }
+  .garden-option {
+    cursor: pointer;
+    &:hover {
+      color: #DDDDDD;
+    }
+    &.garden-option-selected {
+      color: #FFBBBB;
+    }
+  }  
 }
 
 // PNG sequence player

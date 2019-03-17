@@ -91,7 +91,7 @@ export default class Index extends React.Component {
     })
   }
 
-  onCreatureExit(creatureId) {
+  onCreatureExit(creatureId, nextGarden) {
     const { creatures } = this.state
     console.log('onCreatureExit: ', creatureId)
     this.setState({
@@ -102,8 +102,7 @@ export default class Index extends React.Component {
     })
 
     if (this.socket) {
-      const localGardenName = this.state.gardenConfig.localGarden ? this.state.gardenConfig.localGarden.name : undefined
-      this.socket.emit('creatureExit', { creatureId, nextGarden: localGardenName })
+      this.socket.emit('creatureExit', { creatureId, nextGarden })
     }
   }
 
@@ -118,14 +117,20 @@ export default class Index extends React.Component {
     return (
       <div>
         <Head/>
-        { gardenConfig.localGarden && 
+        { gardenConfig.localGarden &&
           <div className={backgroundClass}>
             <h1 className="garden-heading">garden—{ gardenConfig.localGarden.name}</h1>
           </div>
         }
         {
           Object.keys(creatures).map((creatureId, index) => {
-            return <Creature key={creatureId} creatureId={creatureId} isActive={creatures[creatureId]} onExit={this.onCreatureExit}/>
+            return <Creature
+              key={creatureId}
+              creatureId={creatureId}
+              isActive={creatures[creatureId]}
+              onExit={this.onCreatureExit}
+              gardenConfig={gardenConfig}
+            />
           })
         }
       </div>
