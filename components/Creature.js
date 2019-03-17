@@ -114,8 +114,9 @@ export default class CreatureComponent extends React.Component {
 
   render() {
     const { isActive, creatureId } = this.props
+    const showCreature = isActive //&& this._e && this._e.style && this._e.style.transform
     return (
-      <div className={`creature ${isActive ? '' : 'hidden'}`} ref={(e) => {this.onRef(e)}}>
+      <div className={`creature ${showCreature ? '' : 'hidden'}`} ref={(e) => {this.onRef(e)}} style={{transform: `translateX(${getInitialX()}px) translateY(${getInitialY()}px)`}}>
         {creatureId}
         <PNGSequencePlayer
           loopImages={[...Array(NO_LOOPING_FRAMES).keys()].map(k => `/static/images/creature1/${k}.png`)}
