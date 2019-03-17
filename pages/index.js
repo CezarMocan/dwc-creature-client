@@ -72,16 +72,12 @@ export default class Index extends React.Component {
   }
 
   onReceivedGardenInfo({ localGarden, remoteGardens }) {
-    console.log('Local: ', localGarden)
-    console.log('Remote: ', remoteGardens)
     this.setState({
       gardenConfig: { localGarden, remoteGardens }
     })
   }
 
   acquireCreature({ creatureId }) {
-    console.log('acquireCreature: ', creatureId)
-
     const { creatures } = this.state
     this.setState({
       creatures: {
@@ -93,7 +89,6 @@ export default class Index extends React.Component {
 
   onCreatureExit(creatureId, nextGarden) {
     const { creatures } = this.state
-    console.log('onCreatureExit: ', creatureId)
     this.setState({
       creatures: {
         ...creatures,

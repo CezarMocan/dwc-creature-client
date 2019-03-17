@@ -7,3 +7,5 @@ const environments = {
 export default {
   address: environments.development
 }
+
+//Math.random() < 0.5 ? "localhost:3001" : "localhost:3002"
