@@ -41,6 +41,11 @@ export default class Client {
     })
   }
 
+  emitCentralizedStart() {
+    if (!this.socket) return
+    this.socket.emit('centralizedPhaseStartAnimation')
+  }
+
   get isActive() {
     return (Date.now() - this.heartbeatTimestamp) < CLIENT_HEARTBEAT_INACTIVE_THRESHOLD
   }

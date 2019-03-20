@@ -39,6 +39,10 @@ class Manager {
     Object.values(this.clients).forEach(client => client.emitGardenInfo())
   }
 
+  broadcastCentralizedStart() {
+    Object.values(this.clients).forEach(client => client.emitCentralizedStart())
+  }
+
   removeClient(id) {
     delete this.clients[id]
     console.log('disconnected: ', id, this.noClients)

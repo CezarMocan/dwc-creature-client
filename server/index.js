@@ -56,41 +56,38 @@ app.prepare().then(() => {
       DistributedManager.addClient(socket)
   })
 
-  // Debug endpoint for getting the number of connected clients
-  server.get('/noclients', (req, res, next) => {
-    const noClients = DistributedManager.noClients
-    res.send({ noClients })
-  })
-
   // Set current performance phase
-  // curl -d 'phase=centralized' http://localhost:3001/performance
-  // curl -d 'phase=decentralized' http://localhost:3001/performance
-  // curl -d 'phase=distributed' http://localhost:3001/performance
-  server.post('/performance', (req, res, next) => {
+  // curl -d 'phase=centralized' http://localhost:3001/changePhase
+  // curl -d 'phase=decentralized' http://localhost:3001/changePhase
+  // curl -d 'phase=distributed' http://localhost:3001/changePhase
+  server.post('/changePhase', (req, res, next) => {
     const phaseName = (req.body.phase).toUpperCase()
 
     if (!phaseName) {
-      const msg = 'Warning: The request does not have a "phase" parameter'
-      console.warn(msg)
-      console.dir(req.body)
-      res.send(msg)
+      logError('Warning: The request does not have a "phase" parameter', req, res)
       return
     }
 
     if (!PERFORMANCE_PHASES[phaseName]) {
-      const msg = 'Warning: The performance phase you sent in the parameter does not exist. It should be one of CENTRALIZED, DECENTRALIZED, DISTRIBUTED'
-      console.warn(msg)
-      console.dir(req.body)
-      res.send(msg)
+      logError('Warning: The performance phase you sent in the parameter does not exist. It should be one of CENTRALIZED, DECENTRALIZED, DISTRIBUTED', req, res)
       return
     }
 
     setPerformancePhase(PERFORMANCE_PHASES[phaseName])
     DistributedManager.broadcastGardenInfo()
 
-    const msg = `Performance is now in phase ${phaseName}`
-    console.log(msg)
-    res.send(msg)
+    logSuccess(`Performance is now in phase ${phaseName}`, req, res)
+  })
+
+  // Start animation for centralized phase of performance
+  // curl -d '' http://localhost:3001/centralized/start
+  server.post('/centralized/start', (req, res) => {
+    if (!isPerformancePhaseCentralized()) {
+      logError('Performance phase is not centralized! Doing nothing.', req, res)
+      return
+    }
+    DistributedManager.broadcastCentralizedStart()
+    logSuccess('Success!', req, res)
   })
 
   // Creature entering the garden
@@ -133,4 +130,10 @@ app.prepare().then(() => {
     logSuccess('Creature ' + creatureId + ' has successfully left the garden', req, res)
   })
 
+  // Debug endpoint for getting the number of connected clients
+  server.get('/noclients', (req, res, next) => {
+    const noClients = DistributedManager.noClients
+    res.send({ noClients })
+  })
+  
 })

@@ -14,11 +14,12 @@ export default class Index extends React.Component {
     this.acquireCreature = this.acquireCreature.bind(this)
     this.onReceivedGardenInfo = this.onReceivedGardenInfo.bind(this)
     this.onVisibilityChange = this.onVisibilityChange.bind(this)
+    this.centralizedPhaseStartAnimation = this.centralizedPhaseStartAnimation.bind(this)
 
     this.state = {
       creatures: {},
       gardenConfig: {},
-      performancePhase: null
+      centralizedPhaseIsPlaying: false
     }
   }
 
@@ -51,6 +52,7 @@ export default class Index extends React.Component {
   socketSetup() {
     if (!this.socket) {
       this.socket = io();
+      this.socket.on('centralizedPhaseStartAnimation', this.centralizedPhaseStartAnimation)
       this.socket.on('gardenInfo', this.onReceivedGardenInfo)
       this.socket.on('acquireCreature', this.acquireCreature)
       this.heartbeatInterval = setInterval(() => {
@@ -79,6 +81,10 @@ export default class Index extends React.Component {
     })
   }
 
+  centralizedPhaseStartAnimation() {
+    this.setState({ centralizedPhaseIsPlaying: true })
+  }
+
   acquireCreature({ creatureId }) {
     const { creatures } = this.state
     this.setState({
@@ -104,7 +110,7 @@ export default class Index extends React.Component {
   }
 
   render() {
-    const { creatures, gardenConfig } = this.state
+    const { creatures, gardenConfig, centralizedPhaseIsPlaying } = this.state
     const gardenName = gardenConfig.localGarden ? gardenConfig.localGarden.name : ''
     const backgroundClass = classnames({
       "garden-info": true,
@@ -124,6 +130,9 @@ export default class Index extends React.Component {
           gardenConfig.performancePhase == PERFORMANCE_PHASES.CENTRALIZED &&
           <div>
             Centralized phase
+            { centralizedPhaseIsPlaying && 
+              <div>Playing</div>
+            }
           </div>
         }
 
