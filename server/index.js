@@ -34,7 +34,11 @@ app.prepare().then(() => {
     next();
   })
 
-  server.get('*', (req, res) => {
+  server.get('*', (req, res, next) => {
+    console.log('Request: ', req.originalUrl)
+    if (req.originalUrl.indexOf('/noclients') == 0) return next()
+    if (req.originalUrl.indexOf('/hello') == 0) return next()
+    if (req.originalUrl.indexOf('/goodbye') == 0) return next()
     return handle(req, res)
   })
 

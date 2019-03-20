@@ -11,7 +11,7 @@
     "sync:s3": "AWS_DEFAULT_PROFILE=cezar aws s3 sync out s3://dwc-client-prototype",
     "deploy": "npm run export && npm run sync:s3",
     "dev:server": "nodemon --exec babel-node server/index.js",
-    "start:server": "NODE_ENV=production babel-node server/index.js"
+    "start:server": "next build && NODE_ENV=production babel-node server/index.js"
   },
   "keywords": [],
   "author": "",
