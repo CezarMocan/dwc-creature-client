@@ -5,7 +5,6 @@ import io from 'socket.io-client'
 import Style from '../static/styles/main.less'
 import Head from '../components/Head'
 import Creature from '../components/Creature'
-import server from '../config/server'
 
 export default class Index extends React.Component {
   constructor(props) {
@@ -49,7 +48,7 @@ export default class Index extends React.Component {
 
   socketSetup() {
     if (!this.socket) {
-      this.socket = io(server.address);
+      this.socket = io();
       this.socket.on('gardenInfo', this.onReceivedGardenInfo)
       this.socket.on('acquireCreature', this.acquireCreature)
       this.heartbeatInterval = setInterval(() => {
