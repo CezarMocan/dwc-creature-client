@@ -11,6 +11,13 @@ class Manager {
     this.onClientCreatureExit = this.onClientCreatureExit.bind(this)
   }
 
+  get stats() {
+    return {
+      'Number of connected clients: ': this.noClients,
+      'Creatures: ': Object.keys(this.creatures)
+    }
+  }
+
   get noClients() {
     return Object.keys(this.clients).length
   }

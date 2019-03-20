@@ -39,10 +39,11 @@ app.prepare().then(() => {
 
   server.get('*', (req, res, next) => {
     console.log('Request: ', req.originalUrl)
-    if (req.originalUrl.indexOf('/noclients') == 0) return next()
+    if (req.originalUrl.indexOf('/stats') == 0) return next()
     if (req.originalUrl.indexOf('/hello') == 0) return next()
     if (req.originalUrl.indexOf('/goodbye') == 0) return next()
-    if (req.originalUrl.indexOf('/performance') == 0) return next()
+    if (req.originalUrl.indexOf('/changePhase') == 0) return next()
+    if (req.originalUrl.indexOf('/centralized/start') == 0) return next()
     return handle(req, res)
   })
 
@@ -131,9 +132,9 @@ app.prepare().then(() => {
   })
 
   // Debug endpoint for getting the number of connected clients
-  server.get('/noclients', (req, res, next) => {
-    const noClients = DistributedManager.noClients
-    res.send({ noClients })
+  server.get('/stats', (req, res, next) => {
+    const stats = DistributedManager.stats
+    res.send(stats)
   })
   
 })
