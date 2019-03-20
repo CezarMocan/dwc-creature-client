@@ -5,6 +5,7 @@ import io from 'socket.io-client'
 import Style from '../static/styles/main.less'
 import Head from '../components/Head'
 import Creature from '../components/Creature'
+import { PERFORMANCE_PHASES } from '../constants'
 
 export default class Index extends React.Component {
   constructor(props) {
@@ -16,7 +17,8 @@ export default class Index extends React.Component {
 
     this.state = {
       creatures: {},
-      gardenConfig: {}
+      gardenConfig: {},
+      performancePhase: null
     }
   }
 
@@ -70,9 +72,9 @@ export default class Index extends React.Component {
     }
   }
 
-  onReceivedGardenInfo({ localGarden, remoteGardens }) {
+  onReceivedGardenInfo({ localGarden, remoteGardens, performancePhase }) {
     this.setState({
-      gardenConfig: { localGarden, remoteGardens }
+      gardenConfig: { localGarden, remoteGardens, performancePhase }
     })
   }
 
