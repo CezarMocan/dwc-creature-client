@@ -122,6 +122,7 @@ export default class CreatureComponent extends React.Component {
       const nextGarden = this.getNextGarden()
       onExit(creatureId, nextGarden)
       this.stopTicker()
+      this.setState({ nextGarden: null })
     } else {
       // requestAnimationFrame(this.update)
     }

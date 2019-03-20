@@ -3,10 +3,13 @@ import next from 'next'
 import bodyParser from 'body-parser'
 import ioModule from 'socket.io'
 import httpModule from 'http'
-import { manager } from './manager'
-import { setGarden, getGardenConfig, getOtherGardens } from './config'
+import { manager as DistributedManager } from './distributedManager'
+import { setGarden, getGardenConfig, getOtherGardens, PERFORMANCE_PHASES, getPerformancePhase, setPerformancePhase } from './config'
+import { isPerformancePhaseCentralized, isPerformancePhaseDecentralized, isPerformancePhaseDistributed } from './config'
+import { logError, logSuccess } from './log'
 
 setGarden(process.argv[2])
+setPerformancePhase(PERFORMANCE_PHASES.CENTRALIZED)
 
 const GARDEN_CONFIG = getGardenConfig()
 const OTHER_GARDENS = getOtherGardens()
@@ -39,6 +42,7 @@ app.prepare().then(() => {
     if (req.originalUrl.indexOf('/noclients') == 0) return next()
     if (req.originalUrl.indexOf('/hello') == 0) return next()
     if (req.originalUrl.indexOf('/goodbye') == 0) return next()
+    if (req.originalUrl.indexOf('/performance') == 0) return next()
     return handle(req, res)
   })
 
@@ -48,13 +52,44 @@ app.prepare().then(() => {
 
   // A client connected to the garden
   io.on('connection', (socket) => {
-    manager.addClient(socket)
+    if (isPerformancePhaseDistributed)
+      DistributedManager.addClient(socket)
   })
 
   // Debug endpoint for getting the number of connected clients
   server.get('/noclients', (req, res, next) => {
-    const noClients = manager.noClients
+    const noClients = DistributedManager.noClients
     res.send({ noClients })
+  })
+
+  // Set current performance phase
+  // curl -d 'phase=centralized' http://localhost:3001/performance
+  // curl -d 'phase=decentralized' http://localhost:3001/performance
+  // curl -d 'phase=distributed' http://localhost:3001/performance
+  server.post('/performance', (req, res, next) => {
+    const phaseName = req.body.phase
+
+    if (!phaseName) {
+      const msg = 'Warning: The request does not have a "phase" parameter'
+      console.warn(msg)
+      console.dir(req.body)
+      res.send(msg)
+      return
+    }
+
+    if (!PERFORMANCE_PHASES[phaseName.toUpperCase()]) {
+      const msg = 'Warning: The performance phase you sent in the parameter does not exist. It should be one of CENTRALIZED, DECENTRALIZED, DISTRIBUTED'
+      console.warn(msg)
+      console.dir(req.body)
+      res.send(msg)
+      return
+    }
+
+    setPerformancePhase(PERFORMANCE_PHASES[phaseName])
+
+    const msg = `Performance is now in phase ${phaseName}`
+    console.log(msg)
+    res.send(msg)
   })
 
   // Creature entering the garden
@@ -62,19 +97,19 @@ app.prepare().then(() => {
   server.post('/hello', (req, res, next) => {
     const creatureId = req.body.creature
 
-    if (!creatureId) {
-      const msg = 'Warning: The request does not have a "creature" parameter'    
-      console.warn(msg)
-      console.dir(req.body)
-      res.send(msg)
+    if (isPerformancePhaseCentralized()) {
+      logError('Can not acquire creature in centralized phase of performance', req, res)
       return
     }
 
-    manager.helloCreature(creatureId)
+    if (!creatureId) {
+      logError('Warning: The request does not have a "creature" parameter', req, res)
+      return
+    }
 
-    const msg = 'Creature ' + creatureId + ' has successfully entered the garden'
-    console.log(msg)
-    res.send(msg)
+    DistributedManager.helloCreature(creatureId)
+
+    logSuccess('Creature ' + creatureId + ' has successfully entered the garden', req, res)
   })
 
   // Creature leaving the garden
@@ -82,18 +117,19 @@ app.prepare().then(() => {
   server.post('/goodbye', (req, res, next) => {
     const creatureId = req.body.creature
 
+    if (isPerformancePhaseCentralized()) {
+      logError('Can not have creature leave in centralized phase of performance', req, res)
+      return
+    }
+
     if (!creatureId) {
-      const msg = 'Warning: The request does not have a "creature" parameter'
-      console.warn(msg)
-      res.send(msg)
+      logError('Warning: The request does not have a "creature" parameter', req, res)
       return    
     }
 
-    manager.goodbyeCreature(creatureId)
+    DistributedManager.goodbyeCreature(creatureId)
     
-    const msg = 'Creature ' + creatureId + ' has successfully left the garden'
-    console.log(msg)
-    res.send(msg)
+    logSuccess('Creature ' + creatureId + ' has successfully left the garden', req, res)
   })
 
 })
