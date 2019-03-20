@@ -1,4 +1,4 @@
-import { CREATURE_FORCE_MOVE_MS, CLIENT_HEARTBEAT_INACTIVE_THRESHOLD, getGardenConfig, getOtherGardens } from "./config"
+import { CREATURE_FORCE_MOVE_MS, CLIENT_HEARTBEAT_INACTIVE_THRESHOLD, getGardenConfig, getOtherGardens, getPerformancePhase } from "./config"
 
 export default class Client {
   constructor({ id, socket, onDisconnect, onCreatureExit }) {
@@ -16,10 +16,7 @@ export default class Client {
   }
 
   socketSetup() {
-    this.socket.emit('gardenInfo', {
-      localGarden: getGardenConfig(),
-      remoteGardens: getOtherGardens()
-    })
+    this.emitGardenInfo()
 
     this.socket.on('creatureExit', ({ creatureId, nextGarden }) => {
       this.releaseCreature(creatureId, nextGarden)
@@ -32,6 +29,15 @@ export default class Client {
 
     this.socket.on('heartbeat', () => {
       this.heartbeatTimestamp = Date.now()
+    })
+  }
+
+  emitGardenInfo() {
+    if (!this.socket) return
+    this.socket.emit('gardenInfo', {
+      localGarden: getGardenConfig(),
+      remoteGardens: getOtherGardens(),
+      performancePhase: getPerformancePhase()
     })
   }
 

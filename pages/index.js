@@ -73,6 +73,7 @@ export default class Index extends React.Component {
   }
 
   onReceivedGardenInfo({ localGarden, remoteGardens, performancePhase }) {
+    console.log('Performance phase is: ', performancePhase)
     this.setState({
       gardenConfig: { localGarden, remoteGardens, performancePhase }
     })
@@ -118,7 +119,22 @@ export default class Index extends React.Component {
             <h1 className="garden-heading">garden—{ gardenConfig.localGarden.name}</h1>
           </div>
         }
+
         {
+          gardenConfig.performancePhase == PERFORMANCE_PHASES.CENTRALIZED &&
+          <div>
+            Centralized phase
+          </div>
+        }
+
+        {
+          gardenConfig.performancePhase == PERFORMANCE_PHASES.DECENTRALIZED &&
+          <div>
+            Decentralized phase
+          </div>
+        }
+
+        { gardenConfig.performancePhase == PERFORMANCE_PHASES.DISTRIBUTED &&
           Object.keys(creatures).map((creatureId, index) => {
             return <Creature
               key={creatureId}

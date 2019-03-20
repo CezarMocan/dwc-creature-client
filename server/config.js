@@ -11,6 +11,7 @@ export const getGardenName = () => gardenName
 
 export const setPerformancePhase = (newPhase) => {
   performancePhase = newPhase
+  console.log('setPerformancePhase: ', performancePhase)
 }
 
 export const isPerformancePhaseCentralized = () => {

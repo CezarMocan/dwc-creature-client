@@ -52,7 +52,7 @@ app.prepare().then(() => {
 
   // A client connected to the garden
   io.on('connection', (socket) => {
-    if (isPerformancePhaseDistributed)
+    // if (isPerformancePhaseDistributed())
       DistributedManager.addClient(socket)
   })
 
@@ -67,7 +67,7 @@ app.prepare().then(() => {
   // curl -d 'phase=decentralized' http://localhost:3001/performance
   // curl -d 'phase=distributed' http://localhost:3001/performance
   server.post('/performance', (req, res, next) => {
-    const phaseName = req.body.phase
+    const phaseName = (req.body.phase).toUpperCase()
 
     if (!phaseName) {
       const msg = 'Warning: The request does not have a "phase" parameter'
@@ -77,7 +77,7 @@ app.prepare().then(() => {
       return
     }
 
-    if (!PERFORMANCE_PHASES[phaseName.toUpperCase()]) {
+    if (!PERFORMANCE_PHASES[phaseName]) {
       const msg = 'Warning: The performance phase you sent in the parameter does not exist. It should be one of CENTRALIZED, DECENTRALIZED, DISTRIBUTED'
       console.warn(msg)
       console.dir(req.body)
@@ -86,6 +86,7 @@ app.prepare().then(() => {
     }
 
     setPerformancePhase(PERFORMANCE_PHASES[phaseName])
+    DistributedManager.broadcastGardenInfo()
 
     const msg = `Performance is now in phase ${phaseName}`
     console.log(msg)

@@ -35,6 +35,10 @@ class Manager {
     console.log('Connected: ', socket.id, this.noClients)
   }
 
+  broadcastGardenInfo() {
+    Object.values(this.clients).forEach(client => client.emitGardenInfo())
+  }
+
   removeClient(id) {
     delete this.clients[id]
     console.log('disconnected: ', id, this.noClients)
