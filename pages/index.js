@@ -131,10 +131,12 @@ export default class Index extends React.Component {
         {
           gardenConfig.performancePhase == PERFORMANCE_PHASES.CENTRALIZED &&
           <div>
-            Centralized phase
-            { centralizedPhaseIsPlaying &&
-              <div>Playing</div>
-            }
+            <div className="status-info">
+              Centralized phase
+              { centralizedPhaseIsPlaying &&
+                <div>Playing</div>
+              }
+            </div>
             <CentralizedAnimation playing={centralizedPhaseIsPlaying}/>
           </div>
         }
@@ -142,7 +144,9 @@ export default class Index extends React.Component {
         {
           gardenConfig.performancePhase == PERFORMANCE_PHASES.DECENTRALIZED &&
           <div>
-            Decentralized phase
+            <div className="status-info">
+              Decentralized phase
+            </div>
           </div>
         }
 
