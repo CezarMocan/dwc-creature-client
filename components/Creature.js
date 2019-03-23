@@ -3,6 +3,7 @@ import Head from 'next/head'
 import classnames from 'classnames'
 import PNGSequencePlayer from './PNGSequencePlayer'
 import { GlobalTicker } from './Ticker'
+import { PERFORMANCE_PHASES } from '../constants'
 
 const CREATURE_TAP_STOP_TIME = 10
 const NO_LOOPING_FRAMES = 8
@@ -108,8 +109,20 @@ export default class CreatureComponent extends React.Component {
   }
 
   getNextGarden() {
+    const { gardenConfig } = this.props
     const localGardenName = this.props.gardenConfig.localGarden ? this.props.gardenConfig.localGarden.name : undefined
-    return (this.state.nextGarden || localGardenName)
+
+    if (gardenConfig.performancePhase == PERFORMANCE_PHASES.DECENTRALIZED) {
+      return localGardenName
+    }
+    else {
+      // If we're in the distributed phase, send creature to a garden at random
+      const rand3 = parseInt(Math.floor(Math.random() * 3))
+      if (rand3 == 2) return localGardenName
+      else return Object.values(gardenConfig.remoteGardens)[rand3].name
+    }
+    // const localGardenName = this.props.gardenConfig.localGarden ? this.props.gardenConfig.localGarden.name : undefined
+    // return (this.state.nextGarden || localGardenName)
   }
 
   update() {
@@ -121,6 +134,7 @@ export default class CreatureComponent extends React.Component {
     if (this.outOfBounds()) {
       this.resetPosition()
       const nextGarden = this.getNextGarden()
+      console.log('nextGarden is: ', nextGarden)
       onExit(creatureId, nextGarden)
       this.stopTicker()
       this.setState({ nextGarden: null })
@@ -168,12 +182,12 @@ export default class CreatureComponent extends React.Component {
           {creatureId}
           <PNGSequencePlayer
             loopImages={[...Array(NO_LOOPING_FRAMES).keys()].map(k => `/static/images/creature1/${k}.png`)}
-            isPlaying={isActive && !tapped}
+            isPlaying={isActive}
             loop={true}
             className="creature-1"
             inViewport={true}
           />
-          { gardenConfig && tapped &&
+          { /*gardenConfig && tapped &&
             <div className="creature-interaction-dialog">
               <div className="prompt">Would you like to send me to another garden?</div>
               { Object.values(gardenConfig.remoteGardens).map((garden, index) => {
@@ -184,7 +198,7 @@ export default class CreatureComponent extends React.Component {
                 return (<div key={garden.name} className={gardenClass} onClick={this.onGardenNameClick.bind(this, garden.name)}>{garden.name}</div>)
               })}
             </div>
-          }
+          */}
       </div>
     )
   }

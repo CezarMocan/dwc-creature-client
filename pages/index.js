@@ -89,6 +89,7 @@ export default class Index extends React.Component {
   }
 
   acquireCreature({ creatureId }) {
+    console.log('acquireCreature: ', creatureId)
     const { creatures } = this.state
     this.setState({
       creatures: {
@@ -125,19 +126,17 @@ export default class Index extends React.Component {
         <Head/>
         { gardenConfig.localGarden &&
           <div className={backgroundClass}>
-            <h1 className="garden-heading">garden—{ gardenConfig.localGarden.name}</h1>
+            <div className="status-info">
+              Garden: {gardenName}
+              <br/>
+              Phase: { gardenConfig.performancePhase }
+            </div>
           </div>
         }
 
         {
           gardenConfig.performancePhase == PERFORMANCE_PHASES.CENTRALIZED &&
           <div>
-            <div className="status-info">
-              Centralized phase
-              { centralizedPhaseIsPlaying &&
-                <div>Playing</div>
-              }
-            </div>
             <CentralizedAnimation playing={centralizedPhaseIsPlaying}/>
           </div>
         }
@@ -145,14 +144,12 @@ export default class Index extends React.Component {
         {
           gardenConfig.performancePhase == PERFORMANCE_PHASES.DECENTRALIZED &&
           <div>
-            <div className="status-info">
-              Decentralized phase
-            </div>
-            <DecentralizedAnimation/>
+            <DecentralizedAnimation gardenConfig={gardenConfig}/>
           </div>
         }
 
-        { gardenConfig.performancePhase == PERFORMANCE_PHASES.DISTRIBUTED &&
+        { (gardenConfig.performancePhase == PERFORMANCE_PHASES.DECENTRALIZED ||
+          gardenConfig.performancePhase == PERFORMANCE_PHASES.DISTRIBUTED) &&
           Object.keys(creatures).map((creatureId, index) => {
             return <Creature
               key={creatureId}

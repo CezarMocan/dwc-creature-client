@@ -9,7 +9,8 @@ export default class Plant extends React.Component {
     const { xPct, yPct, widthPct, growing, obj } = this.props
     const style = {
       maxWidth: `${widthPct}vw`,
-      transform: `translateX(${xPct}vw) translateY(${yPct}vh)`
+      left: `${xPct}vw`,
+      top: `${yPct}vh`
     }
     return (
       <div className="plant-container" style={style}>
