@@ -74,13 +74,28 @@ h1.garden-heading {
     &.garden-option-selected {
       color: #FFBBBB;
     }
-  }  
+  }
 }
 
 // PNG sequence player
 
+.creature-birth-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+
+  .creature-birth-image {
+    max-width: 80vw;
+    max-height: 80vh;
+  }
+}
+
+
 .png-sequence-container {
-  position: relative;  
+  position: relative;
   img.image-in-sequence {
     width: 100%;
     top: 0;

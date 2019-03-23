@@ -78,7 +78,8 @@ export default class Index extends React.Component {
   onReceivedGardenInfo({ localGarden, remoteGardens, performancePhase }) {
     console.log('Performance phase is: ', performancePhase)
     this.setState({
-      gardenConfig: { localGarden, remoteGardens, performancePhase }
+      gardenConfig: { localGarden, remoteGardens, performancePhase },
+      centralizedPhaseIsPlaying: false
     })
   }
 

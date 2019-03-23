@@ -72,29 +72,19 @@ export default class PNGSequencePlayer extends React.Component {
   }
 
   render() {
-    const { loopImages, loop, onEnd, inViewport, isPlaying, ...props } = this.props
+    const { loopImages, loop, onEnd, inViewport, isPlaying, withPreload, imageClassName, ...props } = this.props
     const { currentIndex } = this.state
 
     const currPath = loopImages[currentIndex]
+    const imageCls = classnames({
+      'image-in-sequence': true,
+      'image-in-sequence-active': true,
+      [imageClassName]: true
+    })
 
     return (
       <div {...props}>
         <div className="png-sequence-container">
-          {
-            /*
-            images.map((path, index) => {
-              const isActive = (index == currentIndex)
-              const classNames = classnames({
-                'image-in-sequence-active': isActive,
-                'image-in-sequence': true
-              })
-
-              return (
-                <img key={index} src={path} className={classNames}/>
-              )
-            })
-            */
-          }
           <img src={currPath} className="image-in-sequence image-in-sequence-active"/>
         </div>
       </div>
@@ -108,5 +98,6 @@ PNGSequencePlayer.defaultProps = {
   loopImages: [],
   inViewport: true,
   onEnd: () => {},
-  withPreload: false
+  withPreload: false,
+  imageClassName: ""
 }

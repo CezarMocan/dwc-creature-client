@@ -16,14 +16,17 @@ export default class CentralizedAnimation extends React.Component {
   render() {
     const { playing } = this.props
     return (
-      <PNGSequencePlayer
-        loopImages={ARR}
-        isPlaying={playing}
-        loop={false}
-        className="creature-birth"
-        inViewport={true}
-        withPreload={true}
-      />
+      <div className="creature-birth-container">
+        <PNGSequencePlayer
+          loopImages={ARR}
+          isPlaying={playing}
+          loop={false}
+          className="creature-birth"
+          imageClassName="creature-birth-image"
+          inViewport={true}
+          withPreload={true}
+        />
+      </div>
     )
   }
 }
