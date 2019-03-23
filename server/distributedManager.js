@@ -1,5 +1,5 @@
 import network from './network'
-import { getGardenName, getOtherGardenAddress } from "./config"
+import { getGardenName, getOtherGardenAddress, getPerformancePhase } from "./config"
 import Client from './Client'
 
 class Manager {
@@ -13,8 +13,10 @@ class Manager {
 
   get stats() {
     return {
+      'Garden: ': getGardenName(),
       'Number of connected clients: ': this.noClients,
-      'Creatures: ': Object.keys(this.creatures)
+      'Creatures in this garden: ': Object.keys(this.creatures),
+      'Performance phase': getPerformancePhase()
     }
   }
 
