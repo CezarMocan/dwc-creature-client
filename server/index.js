@@ -3,6 +3,7 @@ import next from 'next'
 import bodyParser from 'body-parser'
 import ioModule from 'socket.io'
 import httpModule from 'http'
+import compression from 'compression'
 import { manager as DistributedManager } from './distributedManager'
 import { setGarden, getGardenConfig, getOtherGardens, PERFORMANCE_PHASES, getPerformancePhase, setPerformancePhase } from './config'
 import { isPerformancePhaseCentralized, isPerformancePhaseDecentralized, isPerformancePhaseDistributed } from './config'
@@ -25,11 +26,25 @@ const handle = app.getRequestHandler()
 
 app.prepare().then(() => {
   const server = express()
+  server.use(compression())
   server.use(bodyParser.json())
   server.use(bodyParser.urlencoded({ extended: true }))
   var http = httpModule.Server(server)
   var io = ioModule(http)
   var port = GARDEN_CONFIG.port || 3010;
+
+  if (process.env.NODE_ENV === "production") {
+    server.get(
+      /^\/_next\/static\/images\//,
+      (_, res, nextHandler) => {
+        res.setHeader(
+          "Cache-Control",
+          "public, max-age=31536000, immutable",
+        );
+        nextHandler();
+      },
+    );
+  }
 
   server.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -44,6 +59,13 @@ app.prepare().then(() => {
     if (req.originalUrl.indexOf('/goodbye') == 0) return next()
     if (req.originalUrl.indexOf('/changePhase') == 0) return next()
     if (req.originalUrl.indexOf('/centralized/start') == 0) return next()
+    if (req.originalUrl.indexOf('/static/images') != -1) {
+      console.log('Getting image')
+      res.setHeader(
+        "Cache-Control",
+        "public, max-age=31536000, immutable",
+      );
+    }
     return handle(req, res)
   })
 
@@ -123,11 +145,11 @@ app.prepare().then(() => {
 
     if (!creatureId) {
       logError('Warning: The request does not have a "creature" parameter', req, res)
-      return    
+      return
     }
 
     DistributedManager.goodbyeCreature(creatureId)
-    
+
     logSuccess('Creature ' + creatureId + ' has successfully left the garden', req, res)
   })
 
@@ -136,5 +158,5 @@ app.prepare().then(() => {
     const stats = DistributedManager.stats
     res.send(stats)
   })
-  
+
 })

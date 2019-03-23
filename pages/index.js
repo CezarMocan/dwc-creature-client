@@ -6,6 +6,7 @@ import Style from '../static/styles/main.less'
 import Head from '../components/Head'
 import Creature from '../components/Creature'
 import { PERFORMANCE_PHASES } from '../constants'
+import CentralizedAnimation from '../components/CentralizedAnimation'
 
 export default class Index extends React.Component {
   constructor(props) {
@@ -130,9 +131,10 @@ export default class Index extends React.Component {
           gardenConfig.performancePhase == PERFORMANCE_PHASES.CENTRALIZED &&
           <div>
             Centralized phase
-            { centralizedPhaseIsPlaying && 
+            { centralizedPhaseIsPlaying &&
               <div>Playing</div>
             }
+            <CentralizedAnimation playing={centralizedPhaseIsPlaying}/>
           </div>
         }
 

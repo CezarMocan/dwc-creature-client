@@ -1,7 +1,8 @@
 import React from 'react'
 import Head from 'next/head'
 import classnames from 'classnames'
-import PNGSequencePlayer, { GlobalTicker } from './PNGSequencePlayer'
+import PNGSequencePlayer from './PNGSequencePlayer'
+import { GlobalTicker } from './Ticker'
 
 const CREATURE_TAP_STOP_TIME = 10
 const NO_LOOPING_FRAMES = 8
@@ -51,7 +52,7 @@ export default class CreatureComponent extends React.Component {
       }, 2500)
     })
   }
- 
+
   resetPosition() {
     this.anim.x = getInitialX()
     this.anim.y = getInitialY()
@@ -158,9 +159,9 @@ export default class CreatureComponent extends React.Component {
     const { tapped, nextGarden } = this.state
     const showCreature = isActive
     return (
-      <div 
-        ref={(e) => {this.onRef(e)}} 
-        className={`creature ${showCreature ? '' : 'hidden'}`} 
+      <div
+        ref={(e) => {this.onRef(e)}}
+        className={`creature ${showCreature ? '' : 'hidden'}`}
         style={{transform: `translateX(${this.anim.x}px) translateY(${this.anim.y}px) rotate(${this.anim.rotation}deg)`}}
         onClick={this.onClick}
       >
@@ -182,7 +183,7 @@ export default class CreatureComponent extends React.Component {
                 })
                 return (<div key={garden.name} className={gardenClass} onClick={this.onGardenNameClick.bind(this, garden.name)}>{garden.name}</div>)
               })}
-            </div>          
+            </div>
           }
       </div>
     )
