@@ -3900,6 +3900,11 @@ prop-types@^15.6.2:
     object-assign "^4.1.1"
     react-is "^16.8.1"
 
+proton-js@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/proton-js/-/proton-js-3.1.2.tgz#dd78740ee9584b951da9b4feeb38b43f063e85b4"
+  integrity sha512-080ghT1uT9ntPUFo3upt4x2rHIY5FAaluzYgcHikz6dno97CgLSvJbfGpvap+4jCT6yxl4itXEr/9TTKZvA7hA==
+
 proxy-addr@~2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/proxy-addr/-/proxy-addr-2.0.4.tgz#ecfc733bf22ff8c6f407fa275327b9ab67e48b93"

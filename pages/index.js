@@ -7,6 +7,7 @@ import Head from '../components/Head'
 import Creature from '../components/Creature'
 import { PERFORMANCE_PHASES } from '../constants'
 import CentralizedAnimation from '../components/CentralizedAnimation'
+import DecentralizedAnimation from '../components/DecentralizedAnimation'
 
 export default class Index extends React.Component {
   constructor(props) {
@@ -147,6 +148,7 @@ export default class Index extends React.Component {
             <div className="status-info">
               Decentralized phase
             </div>
+            <DecentralizedAnimation/>
           </div>
         }
 
