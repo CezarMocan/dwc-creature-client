@@ -53,8 +53,8 @@ export default class RainParticleSystem extends React.Component {
     this.proton.addEmitter(this.emitter);
 
     // add canvas renderer
-    var renderer = new Proton.DomRenderer(el);
-    this.proton.addRenderer(renderer);
+    this.renderer = new Proton.DomRenderer(el);
+    this.proton.addRenderer(this.renderer);
 
     // console.log(this.proton)
 
@@ -68,24 +68,40 @@ export default class RainParticleSystem extends React.Component {
     if (this.proton) {
       this.proton.update()
       this.emitter.p.x = this.props.x + (Math.random() - 0.5) * 20
+      this.emitter.p.y = this.props.y
     }
     this._rafId = requestAnimationFrame(this.tick)
   }
 
   startTick() {
-    if (!this.proton || !this.emitter) return
+    if (!this.proton || !this.emitter) {
+      this.initializeProton(this._container)
+    }
     //set emitter position
     this.emitter.p.x = this.props.x;
     this.emitter.p.y = this.props.y;
     this.emitter.emit(DURATION);
-    this.tick()
+
+    if (!this._rafId) this.tick()
   }
 
   cancelTick() {
-    if (this._rafId)
-      cancelAnimationFrame(this._rafId)
-    if (this.emitter)
+    // if (this._rafId)
+    //   cancelAnimationFrame(this._rafId)
+    if (this.emitter) {
+      // this.emitter.removeAllParticles()
       this.emitter.stop()
+      // this.emitter.emit(1)
+    }
+    if (this._container) {
+      // while (this._container.firstChild) {
+      //   this._container.removeChild(this._container.firstChild)
+      // }
+      // if (!this.proton) return
+      // if (this.emitter) this.proton.removeEmitter(this.emitter)
+      // // if (this.renderer) this.proton.removeRenderer(this.renderer)
+      // this.proton = this.emitter = this.renderer = null
+    }
   }
 
   componentDidUpdate(oldProps) {
@@ -102,6 +118,7 @@ export default class RainParticleSystem extends React.Component {
   }
 
   componentWillUnmount() {
+    if (this._rafId) cancelAnimationFrame(this._rafId)
     this._proton = null
     this.cancelTick()
   }

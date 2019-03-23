@@ -85,7 +85,7 @@ export default class PNGSequencePlayer extends React.Component {
     return (
       <div {...props}>
         <div className="png-sequence-container">
-          <img src={currPath} className="image-in-sequence image-in-sequence-active"/>
+          <img src={currPath} className={imageCls}/>
         </div>
       </div>
     )
