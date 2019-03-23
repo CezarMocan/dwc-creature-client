@@ -9,7 +9,7 @@ export default class DecentralizedAnimation extends React.Component {
   render() {
     return (
       <div className="decentralized-animation">
-        <RainParticleSystem/>
+        <RainParticleSystem active={true} x={150} y={150}/>
       </div>
     )
   }

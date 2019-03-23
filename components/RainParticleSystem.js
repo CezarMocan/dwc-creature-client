@@ -1,6 +1,8 @@
 import React from 'react'
 // import Proton from 'proton-js'
 
+const DURATION = 10
+
 export default class RainParticleSystem extends React.Component {
   constructor(props) {
     super(props)
@@ -9,11 +11,12 @@ export default class RainParticleSystem extends React.Component {
   }
 
   onContainerRef(e) {
+    if (this._container) return
     this._container = e
     this.initializeProton(this._container)
   }
 
-  initializeProton(el) {
+  initializeProton(el, x = 0, y = 0, duration = 10) {
     const Proton = require('proton-js')
     this.proton = new Proton()
     this.emitter = new Proton.Emitter()
@@ -42,9 +45,9 @@ export default class RainParticleSystem extends React.Component {
     // this.emitter.addBehaviour(new Proton.Alpha(1, 0));
 
     //set emitter position
-    this.emitter.p.x = 300;
-    this.emitter.p.y = 300;
-    this.emitter.emit(50);
+    // this.emitter.p.x = x;
+    // this.emitter.p.y = y;
+    // this.emitter.emit(duration);
 
     //add emitter to the proton
     this.proton.addEmitter(this.emitter);
@@ -53,9 +56,9 @@ export default class RainParticleSystem extends React.Component {
     var renderer = new Proton.DomRenderer(el);
     this.proton.addRenderer(renderer);
 
-    console.log(this.proton)
+    // console.log(this.proton)
 
-    this.tick()
+    // this.tick()
 
     //use Euler integration calculation is more accurate (default false)
     // Proton.USE_CLOCK = false or true;
@@ -64,19 +67,43 @@ export default class RainParticleSystem extends React.Component {
   tick() {
     if (this.proton) {
       this.proton.update()
-      this.emitter.p.x = 300 + (Math.random() - 0.5) * 20
+      this.emitter.p.x = this.props.x + (Math.random() - 0.5) * 20
     }
     this._rafId = requestAnimationFrame(this.tick)
   }
 
-  componentDidMount() {
+  startTick() {
+    if (!this.proton || !this.emitter) return
+    //set emitter position
+    this.emitter.p.x = this.props.x;
+    this.emitter.p.y = this.props.y;
+    this.emitter.emit(DURATION);
+    this.tick()
+  }
 
+  cancelTick() {
+    if (this._rafId)
+      cancelAnimationFrame(this._rafId)
+    if (this.emitter)
+      this.emitter.stop()
+  }
+
+  componentDidUpdate(oldProps) {
+    const { active, x, y } = this.props
+    if (active != oldProps.active) {
+      if (active) this.startTick()
+      else this.cancelTick()
+    }
+  }
+
+  componentDidMount() {
+    const { active } = this.props
+    if (active) this.startTick()
   }
 
   componentWillUnmount() {
     this._proton = null
-    if (this._rafId)
-      cancelAnimationFrame(this._rafId)
+    this.cancelTick()
   }
 
   render() {
@@ -86,4 +113,10 @@ export default class RainParticleSystem extends React.Component {
       </div>
     )
   }
+}
+
+RainParticleSystem.defaultProps = {
+  active: false,
+  x: 0,
+  y: 0
 }
