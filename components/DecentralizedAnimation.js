@@ -106,10 +106,12 @@ export default class DecentralizedAnimation extends React.Component {
   onTouchStart(e) {
     let touch
     if (e.type == 'touchstart') {
-      touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+      touch = e.touches[0] || e.changedTouches[0];
     } else {
       touch = e
     }
+
+    console.log(e)
 
     this.setState({
       touching: true,
@@ -126,8 +128,8 @@ export default class DecentralizedAnimation extends React.Component {
     if (!touching) return
 
     let touch
-    if (e.type == 'touchstart') {
-      touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+    if (e.type == 'touchmove') {
+      touch = e.touches[0] || e.changedTouches[0];
     } else {
       touch = e
     }
