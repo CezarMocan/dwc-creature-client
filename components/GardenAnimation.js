@@ -84,8 +84,6 @@ export default class DecentralizedAnimation extends React.Component {
       plantsInfo: {}
     }
 
-    // this.plants = [1, 2, 3, 4, 5, 6]
-
     this.onTouchStart = this.onTouchStart.bind(this)
     this.onTouchMove = this.onTouchMove.bind(this)
     this.onTouchEnd = this.onTouchEnd.bind(this)
@@ -120,14 +118,26 @@ export default class DecentralizedAnimation extends React.Component {
   }
 
   generateLayout() {
-    const noPlants = this.rand(3, 5)
-    const plants = this.pickN(noPlants, Object.keys(PLANTS))
+    let plants, plantsInfo
 
-    const plantsInfo = {}
-    const positions = this.pickN(noPlants, POSITIONS)
-    plants.forEach((p, index) => {
-      plantsInfo[p] = { ...PLANTS[p], ...positions[index] }
-    })
+    if (!localStorage.getItem('plants') || !localStorage.getItem('plantsInfo')) {
+      const noPlants = this.rand(3, 5)
+      plants = this.pickN(noPlants, Object.keys(PLANTS))
+
+      plantsInfo = {}
+      const positions = this.pickN(noPlants, POSITIONS)
+      plants.forEach((p, index) => {
+        plantsInfo[p] = { ...PLANTS[p], ...positions[index] }
+      })
+
+      localStorage.setItem('plants', JSON.stringify(plants))
+      localStorage.setItem('plantsInfo', JSON.stringify(plantsInfo))
+    } else {
+      plants = JSON.parse(localStorage.getItem('plants'))
+      plantsInfo = JSON.parse(localStorage.getItem('plantsInfo'))
+    }
+
+    console.log(plants, plantsInfo)
 
     this.setState({ plants, plantsInfo })
   }

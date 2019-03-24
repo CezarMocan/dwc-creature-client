@@ -42,7 +42,6 @@ export default class PNGSequencePlayer extends React.Component {
     }
 
     this.setState({ currentIndex: nextIndex })
-
   }
 
   play() {
