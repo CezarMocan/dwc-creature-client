@@ -92,6 +92,11 @@ export default class DecentralizedAnimation extends React.Component {
     this.updatePlantGrowth = this.updatePlantGrowth.bind(this)
   }
 
+  get isDecentralizedPhase() {
+    const { gardenConfig } = this.props
+    return gardenConfig.performancePhase == PERFORMANCE_PHASES.DECENTRALIZED
+  }
+
   get plants(){
     return this.state.plants
   }
@@ -139,7 +144,7 @@ export default class DecentralizedAnimation extends React.Component {
   }
 
   updatePlantGrowth() {
-    const { touching, touchX, touchY } = this.state
+    const { touching, touchX, touchY, plantsInfo } = this.state
     const plantGrowing = getNoGrowthState()
 
     if (touching) {
@@ -147,7 +152,7 @@ export default class DecentralizedAnimation extends React.Component {
       const touchYPct = touchY / window.innerHeight * 100
 
       this.plants.forEach(key => {
-        const p = PLANTS[key]
+        const p = plantsInfo[key]
         if (this.touchInRadius(touchXPct, touchYPct, p.xPct, p.yPct, p.radius))
           plantGrowing[key] = true
       })
@@ -157,14 +162,14 @@ export default class DecentralizedAnimation extends React.Component {
   }
 
   onTouchStart(e) {
+    if (!this.isDecentralizedPhase) return
+
     let touch
     if (e.type == 'touchstart') {
       touch = e.touches[0] || e.changedTouches[0];
     } else {
       touch = e
     }
-
-    console.log(e)
 
     this.setState({
       touching: true,
@@ -173,10 +178,11 @@ export default class DecentralizedAnimation extends React.Component {
     }, () => {
       this.updatePlantGrowth()
     })
-    console.log('onTouchStart: ', e.type, touch.pageX, touch.pageY)
   }
 
   onTouchMove(e) {
+    if (!this.isDecentralizedPhase) return
+
     const { touching } = this.state
     if (!touching) return
 
@@ -196,7 +202,8 @@ export default class DecentralizedAnimation extends React.Component {
   }
 
   onTouchEnd(e) {
-    console.log('onTouchEnd')
+    if (!this.isDecentralizedPhase) return
+
     this.setState({ touching: false }, () => {
       this.updatePlantGrowth()
     })
@@ -208,7 +215,6 @@ export default class DecentralizedAnimation extends React.Component {
 
   render() {
     const { gardenConfig } = this.props
-    const isDecentralizedPhase = gardenConfig.performancePhase == PERFORMANCE_PHASES.DECENTRALIZED
     const { touching, touchX, touchY, plantGrowing, plantsInfo } = this.state
     return (
       <div className="decentralized-animation"
@@ -223,12 +229,12 @@ export default class DecentralizedAnimation extends React.Component {
           return (<Plant
             key={`plant-${k}`}
             obj={plantsInfo[k]}
-            growing={plantGrowing[k] || !isDecentralizedPhase}
+            growing={plantGrowing[k] || !this.isDecentralizedPhase}
             xPct={plantsInfo[k].xPct}
             yPct={plantsInfo[k].yPct}
             widthPct={2 * plantsInfo[k].radius}/>)
         })}
-        { isDecentralizedPhase &&
+        { this.isDecentralizedPhase &&
           <RainParticleSystem active={touching} x={touchX} y={touchY}/>
         }
       </div>

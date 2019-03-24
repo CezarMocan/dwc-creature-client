@@ -46,7 +46,6 @@ export default class PNGSequencePlayer extends React.Component {
   }
 
   play() {
-    console.log('png sequence registerListener')
     this._tickerId = GlobalTicker.registerListener(this.tick)
   }
 
