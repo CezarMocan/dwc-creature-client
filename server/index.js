@@ -16,7 +16,7 @@ if (Object.keys(GARDENS).indexOf(process.argv[2].toLowerCase()) == -1) {
 }
 
 setGarden(process.argv[2])
-setPerformancePhase(PERFORMANCE_PHASES.DECENTRALIZED)
+setPerformancePhase(PERFORMANCE_PHASES.CENTRALIZED)
 
 const GARDEN_CONFIG = getGardenConfig()
 const OTHER_GARDENS = getOtherGardens()
