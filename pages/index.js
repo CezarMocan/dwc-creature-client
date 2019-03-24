@@ -7,7 +7,7 @@ import Head from '../components/Head'
 import Creature from '../components/Creature'
 import { PERFORMANCE_PHASES } from '../constants'
 import CentralizedAnimation from '../components/CentralizedAnimation'
-import DecentralizedAnimation from '../components/DecentralizedAnimation'
+import GardenAnimation from '../components/GardenAnimation'
 
 export default class Index extends React.Component {
   constructor(props) {
@@ -143,9 +143,10 @@ export default class Index extends React.Component {
         }
 
         {
-          gardenConfig.performancePhase == PERFORMANCE_PHASES.DECENTRALIZED &&
+          (gardenConfig.performancePhase == PERFORMANCE_PHASES.DECENTRALIZED ||
+            gardenConfig.performancePhase == PERFORMANCE_PHASES.DISTRIBUTED) &&
           <div>
-            <DecentralizedAnimation gardenConfig={gardenConfig}/>
+            <GardenAnimation gardenConfig={gardenConfig}/>
           </div>
         }
 

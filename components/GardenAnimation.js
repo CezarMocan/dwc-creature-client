@@ -1,6 +1,7 @@
 import React from 'react'
 import RainParticleSystem from './RainParticleSystem'
 import Plant from './Plant'
+import { PERFORMANCE_PHASES } from '../constants'
 
 const NO_FRAMES = [-1, 100, 100, 60, 68, 80, 40]
 
@@ -150,6 +151,8 @@ export default class DecentralizedAnimation extends React.Component {
   }
 
   render() {
+    const { gardenConfig } = this.props
+    const isDecentralizedPhase = gardenConfig.performancePhase == PERFORMANCE_PHASES.DECENTRALIZED
     const { touching, touchX, touchY, plantGrowing } = this.state
     return (
       <div className="decentralized-animation"
@@ -161,9 +164,11 @@ export default class DecentralizedAnimation extends React.Component {
         onMouseUp={this.onTouchEnd}
       >
         { this.plants.map(k => {
-          return (<Plant key={`plant-${k}`} obj={PLANTS[k]} growing={plantGrowing[k]} xPct={PLANTS[k].xPct} yPct={PLANTS[k].yPct} widthPct={2 * PLANTS[k].radius}/>)
+          return (<Plant key={`plant-${k}`} obj={PLANTS[k]} growing={plantGrowing[k] || !isDecentralizedPhase} xPct={PLANTS[k].xPct} yPct={PLANTS[k].yPct} widthPct={2 * PLANTS[k].radius}/>)
         })}
-        <RainParticleSystem active={touching} x={touchX} y={touchY}/>
+        { isDecentralizedPhase &&
+          <RainParticleSystem active={touching} x={touchX} y={touchY}/>
+        }
       </div>
     )
   }
