@@ -181,7 +181,7 @@ export default class CreatureComponent extends React.Component {
         style={{transform: `translateX(${this.anim.x}px) translateY(${this.anim.y}px) rotate(${this.anim.rotation}deg)`}}
         onClick={this.onClick}
       >
-          {creatureId}
+          {false && creatureId}
           <PNGSequencePlayer
             loopImages={[...Array(NO_LOOPING_FRAMES).keys()].map(k => `/static/images/creatures/${framesFolder}/${k}.png`)}
             isPlaying={isActive}
