@@ -8,11 +8,9 @@ Note: This will install `puppeteer`, the headless Google Chrome library, which i
 
 ## Running
 
-Run `npm run dev` in order to start the development server.
+Run `npm run dev:server [garden-name]` in order to start the development server for a garden. The `garden-name` parameter can be one of `alpha`, `beta`, `gamma`.
 
 Run `npm run export` in order to generate a static site.
-
-Note: The websocket server is currently hardcoded in `index.js`. I'll make sure to update that.
 
 
 ## Performance script
