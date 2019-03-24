@@ -3,47 +3,47 @@ import RainParticleSystem from './RainParticleSystem'
 import Plant from './Plant'
 import { PERFORMANCE_PHASES } from '../constants'
 
-const NO_FRAMES = [-1, 100, 100, 60, 68, 80, 40]
+const NO_FRAMES = [-1, 100, 100, 60, 80, 80, 40]
 
 const PLANTS = {
   1: {
     noFrames: NO_FRAMES[1],
-    images: [...Array(NO_FRAMES[1]).keys()].map(k => `/static/images/decentralized/garden/1/${k+1}.png`),
+    images: [...Array(NO_FRAMES[1]).keys()].map(k => `/static/images/decentralized/garden/1/${k}.png`),
     xPct: 20,
     yPct: 30,
     radius: 15
   },
   2: {
     noFrames: NO_FRAMES[2],
-    images: [...Array(NO_FRAMES[2]).keys()].map(k => `/static/images/decentralized/garden/2/${k+1}.png`),
+    images: [...Array(NO_FRAMES[2]).keys()].map(k => `/static/images/decentralized/garden/2/${k}.png`),
     xPct: 20,
     yPct: 65,
     radius: 25
   },
   3: {
     noFrames: NO_FRAMES[3],
-    images: [...Array(NO_FRAMES[3]).keys()].map(k => `/static/images/decentralized/garden/3/${k+1}.png`),
+    images: [...Array(NO_FRAMES[3]).keys()].map(k => `/static/images/decentralized/garden/3/${k}.png`),
     xPct: 50,
     yPct: 20,
     radius: 12
   },
   4: {
     noFrames: NO_FRAMES[4],
-    images: [...Array(NO_FRAMES[4]).keys()].map(k => `/static/images/decentralized/garden/4/${k+1}.png`),
+    images: [...Array(NO_FRAMES[4]).keys()].map(k => `/static/images/decentralized/garden/4/${k}.png`),
     xPct: 60,
     yPct: 65,
     radius: 22
   },
   5: {
     noFrames: NO_FRAMES[5],
-    images: [...Array(NO_FRAMES[5]).keys()].map(k => `/static/images/decentralized/garden/5/${k+1}.png`),
+    images: [...Array(NO_FRAMES[5]).keys()].map(k => `/static/images/decentralized/garden/5/${k}.png`),
     xPct: 80,
     yPct: 25,
     radius: 18
   },
   6: {
     noFrames: NO_FRAMES[6],
-    images: [...Array(NO_FRAMES[6]).keys()].map(k => `/static/images/decentralized/garden/6/${k+1}.png`),
+    images: [...Array(NO_FRAMES[6]).keys()].map(k => `/static/images/decentralized/garden/6/${k}.png`),
     xPct: 70,
     yPct: 70,
     radius: 19

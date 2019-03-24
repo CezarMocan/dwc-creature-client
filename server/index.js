@@ -10,7 +10,7 @@ import { isPerformancePhaseCentralized, isPerformancePhaseDecentralized, isPerfo
 import { logError, logSuccess } from './log'
 
 setGarden(process.argv[2])
-setPerformancePhase(PERFORMANCE_PHASES.DECENTRALIZED)
+setPerformancePhase(PERFORMANCE_PHASES.DISTRIBUTED)
 
 const GARDEN_CONFIG = getGardenConfig()
 const OTHER_GARDENS = getOtherGardens()
