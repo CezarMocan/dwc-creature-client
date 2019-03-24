@@ -59,7 +59,7 @@ app.prepare().then(() => {
   })
 
   server.get('*', (req, res, next) => {
-    // console.log('Request: ', req.originalUrl)
+    console.log('Request: ', req.originalUrl)
     if (req.originalUrl.indexOf('/stats') == 0) return next()
     if (req.originalUrl.indexOf('/hello') == 0) return next()
     if (req.originalUrl.indexOf('/goodbye') == 0) return next()

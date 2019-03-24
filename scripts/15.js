@@ -14,6 +14,7 @@ const sleep = (ms) => {
   for (let i = 0; i < 5; i++) {
       const browser = await puppeteer.launch();
       for (let j = 0; j < 3; j++) {
+        console.log('Launching page: ', i, j)
         const page = await browser.newPage();
         await page.setViewport({ width: 75, height: 150 })
         await page.goto(address);
@@ -23,6 +24,6 @@ const sleep = (ms) => {
   }
   await sleep(timeOnPage)
   for (let browser of browsers) {
-    browser.close();    
+    browser.close();
   }
 })();
