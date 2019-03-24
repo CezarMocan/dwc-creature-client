@@ -137,8 +137,6 @@ export default class DecentralizedAnimation extends React.Component {
       plantsInfo = JSON.parse(localStorage.getItem('plantsInfo'))
     }
 
-    console.log(plants, plantsInfo)
-
     this.setState({ plants, plantsInfo })
   }
 

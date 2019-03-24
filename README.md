@@ -55,3 +55,19 @@ Move to distributed phase *on each server*
 curl -d 'phase=distributed' http://localhost:3001/changePhase
 curl -d 'phase=distributed' http://localhost:3002/changePhase
 curl -d 'phase=distributed' http://localhost:3003/changePhase
+
+## Pi Setup
+```sh
+sudo apt-get update
+sudo apt-get install git
+
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+
+#Node
+sudo apt-get install nodejs
+
+#Yarn
+curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+     echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+     sudo apt-get update && sudo apt-get install yarn
+```
