@@ -1,5 +1,6 @@
 import React from 'react'
 // import Proton from 'proton-js'
+var Proton
 
 const DURATION = 10
 
@@ -8,6 +9,7 @@ export default class RainParticleSystem extends React.Component {
     super(props)
     this.onContainerRef = this.onContainerRef.bind(this)
     this.tick = this.tick.bind(this)
+    this.emitters = []
   }
 
   onContainerRef(e) {
@@ -16,92 +18,80 @@ export default class RainParticleSystem extends React.Component {
     this.initializeProton(this._container)
   }
 
-  initializeProton(el, x = 0, y = 0, duration = 10) {
-    const Proton = require('proton-js')
-    this.proton = new Proton()
-    this.emitter = new Proton.Emitter()
-
-    //set Rate
-    this.emitter.rate = new Proton.Rate(Proton.getSpan(1, 1), 0.1);
+  configureEmitter(emitter) {
+    emitter.rate = new Proton.Rate(Proton.getSpan(1, 1), 0.15);
 
     //add Initialize
-    this.emitter.addInitialize(new Proton.Radius(5, 12));
-    this.emitter.addInitialize(new Proton.Life(2, 2));
-    this.emitter.addInitialize(new Proton.Velocity(0.75, Proton.getSpan(155, 215), 'polar'));
-    // this.emitter.addInitialize(new Proton.Mass(200))
+    emitter.addInitialize(new Proton.Radius(5, 12));
+    emitter.addInitialize(new Proton.Life(1, 1));
+    emitter.addInitialize(new Proton.Velocity(1, Proton.getSpan(175, 205), 'polar'));
 
     //add Behaviour
-    this.emitter.addInitialize(new Proton.Body(
-      ['static/images/decentralized/rain/1.png', 'static/images/decentralized/rain/2.png', 'static/images/decentralized/rain/3.png'],
+    emitter.addInitialize(new Proton.Body(
+      ['static/images/decentralized/rain/1.png',
+       'static/images/decentralized/rain/2.png',
+       'static/images/decentralized/rain/3.png',
+       'static/images/decentralized/rain/4.png',
+       'static/images/decentralized/rain/5.png'
+      ],
       15,
       15
     ))
 
-    // this.emitter.addBehaviour(new Proton.Alpha(1, 0));
-    this.emitter.addBehaviour(new Proton.Rotate(new Proton.Span(0, 360), new Proton.Span(0, 1), 'add'));
-    this.emitter.addBehaviour(new Proton.Gravity(0.5));
-    this.emitter.addBehaviour(new Proton.Scale(Proton.getSpan(0.4, 0.5), Proton.getSpan(0.4, 0.5)));
-    // this.emitter.addBehaviour(new Proton.Color('random'));
-    // this.emitter.addBehaviour(new Proton.Alpha(1, 0));
+    emitter.addBehaviour(new Proton.Rotate(new Proton.Span(0, 360), new Proton.Span(0, 1), 'add'));
+    emitter.addBehaviour(new Proton.Gravity(2.5));
+    emitter.addBehaviour(new Proton.Scale(Proton.getSpan(0.15, 0.25), Proton.getSpan(0.15, 0.25)));
+  }
 
-    //set emitter position
-    // this.emitter.p.x = x;
-    // this.emitter.p.y = y;
-    // this.emitter.emit(duration);
+  initializeProton(el, x = 0, y = 0, duration = 10) {
+    if (!Proton) Proton = require('proton-js')
+    this.proton = new Proton()
+    const noEmitters = 5
 
-    //add emitter to the proton
-    this.proton.addEmitter(this.emitter);
+    this.emitters = []
+    for (let i = 0; i < noEmitters; i++) {
+      this.emitters.push(new Proton.Emitter())
+    }
+
+    this.emitters.forEach(emitter => {
+      this.configureEmitter(emitter)
+      this.proton.addEmitter(emitter);
+    })
 
     // add canvas renderer
     this.renderer = new Proton.DomRenderer(el);
     this.proton.addRenderer(this.renderer);
-
-    // console.log(this.proton)
-
-    // this.tick()
-
-    //use Euler integration calculation is more accurate (default false)
-    // Proton.USE_CLOCK = false or true;
   }
 
   tick() {
     if (this.proton) {
       this.proton.update()
-      this.emitter.p.x = this.props.x + (Math.random() - 0.5) * 20
-      this.emitter.p.y = this.props.y
+      this.emitters.forEach((emitter, index) => {
+        const sgn = (index % 2 == 0) ? -1 : 1
+        const amt = sgn * parseInt(Math.floor((index + 1) / 2))
+        emitter.p.x = this.props.x + amt * 20
+        emitter.p.y = this.props.y + sgn * amt * 20//(sgn + 1) / 2 * 25
+      })
     }
     this._rafId = requestAnimationFrame(this.tick)
   }
 
   startTick() {
-    if (!this.proton || !this.emitter) {
+    if (!this.proton) {
       this.initializeProton(this._container)
     }
     //set emitter position
-    this.emitter.p.x = this.props.x;
-    this.emitter.p.y = this.props.y;
-    this.emitter.emit(DURATION);
+    this.emitters.forEach(emitter => {
+      emitter.p.x = this.props.x;
+      emitter.p.y = this.props.y;
+      emitter.emit(DURATION);
+    })
 
     if (!this._rafId) this.tick()
   }
 
   cancelTick() {
-    // if (this._rafId)
-    //   cancelAnimationFrame(this._rafId)
-    if (this.emitter) {
-      // this.emitter.removeAllParticles()
-      this.emitter.stop()
-      // this.emitter.emit(1)
-    }
-    if (this._container) {
-      // while (this._container.firstChild) {
-      //   this._container.removeChild(this._container.firstChild)
-      // }
-      // if (!this.proton) return
-      // if (this.emitter) this.proton.removeEmitter(this.emitter)
-      // // if (this.renderer) this.proton.removeRenderer(this.renderer)
-      // this.proton = this.emitter = this.renderer = null
-    }
+    this.emitters.forEach(emitter => emitter.stop())
   }
 
   componentDidUpdate(oldProps) {
