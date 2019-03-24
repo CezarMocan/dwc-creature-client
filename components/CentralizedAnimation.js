@@ -28,7 +28,6 @@ export default class CentralizedAnimation extends React.Component {
           className="creature-birth"
           imageClassName="creature-birth-image"
           inViewport={true}
-          withPreload={true}
         />
       </div>
     )

@@ -34,7 +34,7 @@ export default class Plant extends React.Component {
             className="plant-sequence-container"
             imageClassName="plant-image"
             inViewport={true}
-            withPreload={true}
+            withPreload={false}
             onEnd={this.onEnd}
           />
         }

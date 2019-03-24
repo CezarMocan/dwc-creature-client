@@ -2,6 +2,7 @@ import React from 'react'
 import RainParticleSystem from './RainParticleSystem'
 import Plant from './Plant'
 import { PERFORMANCE_PHASES } from '../constants'
+import { unzipImagesFromArchive } from '../utils/zip'
 
 const NO_FRAMES = [-1, 100, 100, 60, 80, 80, 40, 50]
 
@@ -16,41 +17,12 @@ const POSITIONS = [
 
 const PLANTS = NO_FRAMES.reduce((acc, noFrames, index) => {
   if (index == 0) return acc
-  const images = [...Array(noFrames).keys()].map(k => `/static/images/decentralized/garden/${index}/${k}.png`)
-  acc[index] = { noFrames, images }
+  const zipPath = `/static/images/decentralized/garden/${index}.zip`
+  const frameFilenameFn = (frameIndex) => `${frameIndex}.png`
+  // const images = [...Array(noFrames).keys()].map(k => `/static/images/decentralized/garden/${index}/${k}.png`)
+  acc[index] = { noFrames, zipPath, frameFilenameFn }
   return acc
 }, {})
-
-// const PLANTS = {
-//   1: {
-//     noFrames: NO_FRAMES[1],
-//     images: [...Array(NO_FRAMES[1]).keys()].map(k => `/static/images/decentralized/garden/1/${k}.png`),
-//   },
-//   2: {
-//     noFrames: NO_FRAMES[2],
-//     images: [...Array(NO_FRAMES[2]).keys()].map(k => `/static/images/decentralized/garden/2/${k}.png`),
-//   },
-//   3: {
-//     noFrames: NO_FRAMES[3],
-//     images: [...Array(NO_FRAMES[3]).keys()].map(k => `/static/images/decentralized/garden/3/${k}.png`),
-//   },
-//   4: {
-//     noFrames: NO_FRAMES[4],
-//     images: [...Array(NO_FRAMES[4]).keys()].map(k => `/static/images/decentralized/garden/4/${k}.png`),
-//   },
-//   5: {
-//     noFrames: NO_FRAMES[5],
-//     images: [...Array(NO_FRAMES[5]).keys()].map(k => `/static/images/decentralized/garden/5/${k}.png`),
-//   },
-//   6: {
-//     noFrames: NO_FRAMES[6],
-//     images: [...Array(NO_FRAMES[6]).keys()].map(k => `/static/images/decentralized/garden/6/${k}.png`),
-//   },
-//   6: {
-//     noFrames: NO_FRAMES[7],
-//     images: [...Array(NO_FRAMES[7]).keys()].map(k => `/static/images/decentralized/garden/7/${k}.png`),
-//   }
-// }
 
 const getNoGrowthState = () => {
   return Object.keys(PLANTS).reduce((acc, key) => {
@@ -104,25 +76,36 @@ export default class DecentralizedAnimation extends React.Component {
     return Object.keys(picked).map(k => arr[k])
   }
 
-  generateLayout() {
-    let plants, plantsInfo
+  async generateLayout() {
+    let plants, positions
 
-    if (!localStorage.getItem('plants') || !localStorage.getItem('plantsInfo')) {
+    if (!localStorage.getItem('plants') || !localStorage.getItem('positions')) {
       const noPlants = this.rand(3, 5)
       plants = this.pickN(noPlants, Object.keys(PLANTS))
-
-      plantsInfo = {}
-      const positions = this.pickN(noPlants, POSITIONS)
-      plants.forEach((p, index) => {
-        plantsInfo[p] = { ...PLANTS[p], ...positions[index] }
-      })
+      positions = this.pickN(noPlants, POSITIONS)
 
       localStorage.setItem('plants', JSON.stringify(plants))
-      localStorage.setItem('plantsInfo', JSON.stringify(plantsInfo))
+      localStorage.setItem('positions', JSON.stringify(positions))
     } else {
       plants = JSON.parse(localStorage.getItem('plants'))
-      plantsInfo = JSON.parse(localStorage.getItem('plantsInfo'))
+      positions = JSON.parse(localStorage.getItem('positions'))
     }
+
+    let plantsInfo = {}
+    for (let index = 0; index < plants.length; index++) {
+      const p = plants[index]
+      const zipPath = PLANTS[p].zipPath
+      const noFrames = PLANTS[p].noFrames
+      const frameFilenameFn = PLANTS[p].frameFilenameFn
+      const images = await unzipImagesFromArchive(zipPath, noFrames, frameFilenameFn)
+
+      plantsInfo[p] = {
+        noFrames,
+        images,
+        ...positions[index]
+      }
+    }
+
 
     this.setState({ plants, plantsInfo })
   }
@@ -204,12 +187,11 @@ export default class DecentralizedAnimation extends React.Component {
     })
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.generateLayout()
   }
 
   render() {
-    const { gardenConfig } = this.props
     const { touching, touchX, touchY, plantGrowing, plantsInfo } = this.state
     return (
       <div className="decentralized-animation"
