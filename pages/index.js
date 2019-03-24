@@ -43,6 +43,7 @@ export default class Index extends React.Component {
 
   componentDidMount() {
     document.addEventListener('visibilitychange', this.onVisibilityChange, false);
+    document.body.addEventListener('touchstart', function(e){ e.preventDefault(); });
     this.socketSetup()
   }
 

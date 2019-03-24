@@ -16,7 +16,7 @@ const PLANTS = {
     noFrames: NO_FRAMES[2],
     images: [...Array(NO_FRAMES[2]).keys()].map(k => `/static/images/decentralized/garden/2/${k+1}.png`),
     xPct: 20,
-    yPct: 70,
+    yPct: 65,
     radius: 25
   },
   3: {
@@ -30,7 +30,7 @@ const PLANTS = {
     noFrames: NO_FRAMES[4],
     images: [...Array(NO_FRAMES[4]).keys()].map(k => `/static/images/decentralized/garden/4/${k+1}.png`),
     xPct: 60,
-    yPct: 75,
+    yPct: 65,
     radius: 22
   },
   5: {
@@ -44,7 +44,7 @@ const PLANTS = {
     noFrames: NO_FRAMES[6],
     images: [...Array(NO_FRAMES[6]).keys()].map(k => `/static/images/decentralized/garden/6/${k+1}.png`),
     xPct: 70,
-    yPct: 75,
+    yPct: 70,
     radius: 19
   }
 }

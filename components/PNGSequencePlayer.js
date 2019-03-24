@@ -85,7 +85,7 @@ export default class PNGSequencePlayer extends React.Component {
     return (
       <div {...props}>
         <div className="png-sequence-container">
-          <img src={currPath} className={imageCls}/>
+          <img src={currPath} className={imageCls} draggable={false}/>
         </div>
       </div>
     )
