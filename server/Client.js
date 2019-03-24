@@ -4,6 +4,7 @@ export default class Client {
   constructor({ id, socket, onDisconnect, onCreatureExit }) {
     this.id = id
     this.socket = socket
+    console.log('Client IP: ', this.socket.handshake.address)
     this.onDisconnect = onDisconnect
     this.onCreatureExit = onCreatureExit
 
@@ -79,9 +80,9 @@ export default class Client {
     const currCreatureCount = this.getCreatureTotalCount(creatureId)
 
     setTimeout(() => {
-      if (this.hasCreature(creatureId) && 
-          this.getCreatureTotalCount(creatureId) == currCreatureCount && 
-          !this.isActive) 
+      if (this.hasCreature(creatureId) &&
+          this.getCreatureTotalCount(creatureId) == currCreatureCount &&
+          !this.isActive)
       {
         console.log('Client ', this.id, ' force releasing creature ', creatureId)
         this.releaseCreature(creatureId)
