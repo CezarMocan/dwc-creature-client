@@ -59,14 +59,14 @@ app.prepare().then(() => {
   })
 
   server.get('*', (req, res, next) => {
-    console.log('Request: ', req.originalUrl)
+    // console.log('Request: ', req.originalUrl)
     if (req.originalUrl.indexOf('/stats') == 0) return next()
     if (req.originalUrl.indexOf('/hello') == 0) return next()
     if (req.originalUrl.indexOf('/goodbye') == 0) return next()
     if (req.originalUrl.indexOf('/changePhase') == 0) return next()
     if (req.originalUrl.indexOf('/centralized/start') == 0) return next()
     if (req.originalUrl.indexOf('/static/images') != -1) {
-      console.log('Getting image')
+      // console.log('Getting image')
       res.setHeader(
         "Cache-Control",
         "public, max-age=31536000, immutable",

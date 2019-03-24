@@ -27,13 +27,15 @@
     "classnames": "^2.2.6",
     "compression": "^1.7.4",
     "express": "^4.16.4",
+    "jszip": "^3.2.1",
+    "jszip-utils": "^0.0.2",
     "less": "^3.9.0",
     "next": "^8.0.3",
+    "pify": "^4.0.1",
     "proton-js": "^3.1.2",
     "puppeteer": "^1.12.2",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
-    "request": "^2.88.0",
     "socket.io": "^2.2.0"
   }
 }
