@@ -20,41 +20,50 @@ Note: The websocket server is currently hardcoded in `index.js`. I'll make sure 
 **1.**
 Start servers:
 
-`npm run start:server alpha`: Starts server named alpha.
-`npm run start:server beta`: Starts server named beta.
-`npm run start:server gamma`: Starts server named gamma.
+```sh
+npm run start:server alpha #Starts server named alpha.
+npm run start:server beta #Starts server named beta.
+npm run start:server gamma #Starts server named gamma.
+```
 
 They will all be in the centralized phase.
 
 **2.**
 Start playing birth animation *on each server*.
 
+```sh
 curl -d '' http://localhost:3001/centralized/start
 curl -d '' http://localhost:3002/centralized/start
 curl -d '' http://localhost:3003/centralized/start
+```
 
 
 **3.**
 Move to decentralized phase *on each server*
 
+```sh
 curl -d 'phase=decentralized' http://localhost:3001/changePhase
 curl -d 'phase=decentralized' http://localhost:3002/changePhase
 curl -d 'phase=decentralized' http://localhost:3003/changePhase
+```
 
 Send creatures to the 3 gardens, *one per garden*
 
+```sh
 curl -d 'creature=creature1' http://localhost:3001/hello
 curl -d 'creature=creature2' http://localhost:3002/hello
 curl -d 'creature=creature3' http://localhost:3003/hello
-
+```
 
 **4.**
 
 Move to distributed phase *on each server*
 
+```sh
 curl -d 'phase=distributed' http://localhost:3001/changePhase
 curl -d 'phase=distributed' http://localhost:3002/changePhase
 curl -d 'phase=distributed' http://localhost:3003/changePhase
+```
 
 ## Pi Setup
 ```sh
