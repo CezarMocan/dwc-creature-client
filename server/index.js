@@ -5,7 +5,7 @@ import ioModule from 'socket.io'
 import httpModule from 'http'
 import compression from 'compression'
 import { manager as DistributedManager } from './distributedManager'
-import { GARDENS, setGarden, getGardenConfig, getOtherGardens, PERFORMANCE_PHASES, getPerformancePhase, setPerformancePhase } from './config'
+import { GARDENS, CREATURES, setGarden, getGardenConfig, getOtherGardens, PERFORMANCE_PHASES, getPerformancePhase, setPerformancePhase } from './config'
 import { isPerformancePhaseCentralized, isPerformancePhaseDecentralized, isPerformancePhaseDistributed } from './config'
 import { logError, logSuccess } from './log'
 
@@ -131,6 +131,14 @@ app.prepare().then(() => {
 
     if (!creatureId) {
       logError('Warning: The request does not have a "creature" parameter', req, res)
+      return
+    }
+
+    if (!CREATURES[creatureId]) {
+      const creatureNames = Object.keys(CREATURES).reduce((acc, name) => {
+        return acc + ' ' + name
+      }, '')
+      logError('Warning: The request does not have a "creature" parameter. Creature must be one of ' + creatureNames, req, res)
       return
     }
 
