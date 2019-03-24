@@ -3,10 +3,10 @@ import Head from 'next/head'
 import classnames from 'classnames'
 import PNGSequencePlayer from './PNGSequencePlayer'
 import { GlobalTicker } from './Ticker'
-import { PERFORMANCE_PHASES } from '../constants'
+import { PERFORMANCE_PHASES, CREATURES } from '../constants'
 
 const CREATURE_TAP_STOP_TIME = 10
-const NO_LOOPING_FRAMES = 8
+const NO_LOOPING_FRAMES = 6
 
 const getInitialX = () => -100
 const getInitialY = () => window.innerHeight ? (window.innerHeight / 2 - 50) : 250
@@ -172,6 +172,8 @@ export default class CreatureComponent extends React.Component {
     const { isActive, creatureId, gardenConfig } = this.props
     const { tapped, nextGarden } = this.state
     const showCreature = isActive
+    const framesFolder = CREATURES[creatureId].folder
+    const creatureClassName = CREATURES[creatureId].className
     return (
       <div
         ref={(e) => {this.onRef(e)}}
@@ -181,10 +183,11 @@ export default class CreatureComponent extends React.Component {
       >
           {creatureId}
           <PNGSequencePlayer
-            loopImages={[...Array(NO_LOOPING_FRAMES).keys()].map(k => `/static/images/creature1/${k}.png`)}
+            loopImages={[...Array(NO_LOOPING_FRAMES).keys()].map(k => `/static/images/creatures/${framesFolder}/${k}.png`)}
             isPlaying={isActive}
             loop={true}
-            className="creature-1"
+            className={creatureClassName}
+            imageClassName="reversed-x"
             inViewport={true}
           />
           { /*gardenConfig && tapped &&

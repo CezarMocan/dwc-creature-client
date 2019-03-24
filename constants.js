@@ -15,10 +15,37 @@ export const GARDENS = {
       name: "gamma"
     }
 }
-  
-export const CREATURES = {
 
-}  
+export const CREATURES = {
+  creature1: {
+    folder: 1,
+    className: "creature-1"
+  },
+  creature2: {
+    folder: 2,
+    className: "creature-2"
+  },
+  creature3: {
+    folder: 3,
+    className: "creature-3"
+  },
+  creature4: {
+    folder: 4,
+    className: "creature-4"
+  },
+  creature5: {
+    folder: 5,
+    className: "creature-5"
+  },
+  creature6: {
+    folder: 6,
+    className: "creature-6"
+  },
+  creature7: {
+    folder: 7,
+    className: "creature-7"
+  }
+}
 
 export const PERFORMANCE_PHASES = {
     'CENTRALIZED': 'centralized',
