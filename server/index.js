@@ -116,7 +116,7 @@ app.prepare().then(() => {
       return
     }
     DistributedManager.broadcastCentralizedStart()
-    logSuccess('Success!', req, res)
+    logSuccess('Centralized Phase: Creature birth animation starting', req, res)
   })
 
   // Creature entering the garden
