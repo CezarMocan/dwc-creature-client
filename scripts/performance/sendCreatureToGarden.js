@@ -28,17 +28,3 @@ request.post(`${destination}${ENDPOINT}`, {
 }, (err, res, body) => {
   console.log('[ Garden', GARDEN, ']: ', body)
 })
-
-
-/*
-Object.keys(GARDENS).forEach(name => {
-  const destination = `${GARDENS[name].address}:${GARDENS[name].port}`
-  request.post(`${destination}${ENDPOINT}`, {
-    form: {
-      creature: MAPPING[name]
-    }
-  }, (err, res, body) => {
-    console.log('[ Garden', name, ']: ', body)
-  })
-})
-*/

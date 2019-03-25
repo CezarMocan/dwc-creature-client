@@ -79,8 +79,8 @@ export default class DecentralizedAnimation extends React.Component {
   async generateLayout() {
     let plants, positions
 
-    if (true) {
-    // if (!localStorage.getItem('plants') || !localStorage.getItem('positions')) {
+    // if (true) {
+    if (!localStorage.getItem('plants') || !localStorage.getItem('positions')) {
       const noPlants = this.rand(3, 5)
       plants = this.pickN(noPlants, Object.keys(PLANTS))
       positions = this.pickN(noPlants, POSITIONS)

@@ -120,9 +120,15 @@ class Manager {
     return !!this.creatures[creatureId]
   }
 
-  moveCreatureToNewGarden(creatureId, newGarden) {
+  async moveCreatureToNewGarden(creatureId, newGarden) {
     this.goodbyeCreature(creatureId)
-    network.sendCreatureToGarden(newGarden, creatureId)
+    let attempt
+    try {
+      attempt = await network.sendCreatureToGarden(newGarden, creatureId)
+    } catch (e) {
+      console.log('Promise rejected!')
+      this.helloCreature(creatureId)
+    }
   }
 }
 
