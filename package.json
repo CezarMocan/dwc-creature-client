@@ -15,7 +15,8 @@
     "p:toDecentralized": "babel-node scripts/performance/toDecentralized.js",
     "p:toDistributed": "babel-node scripts/performance/toDistributed.js",
     "p:decentralizedCreaturesToGardens": "babel-node scripts/performance/decentralizedCreaturesToGardens.js",
-    "p:decentralizedExitCreatures": "babel-node scripts/performance/decentralizedExitCreatures.js"
+    "p:decentralizedExitCreatures": "babel-node scripts/performance/decentralizedExitCreatures.js",
+    "p:sendCreatureToGarden": "babel-node scripts/performance/sendCreatureToGarden.js"
   },
   "keywords": [],
   "author": "",
