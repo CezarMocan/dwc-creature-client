@@ -21,6 +21,8 @@ export default class CreatureComponent extends React.Component {
     this.onTouchEnd = this.onTouchEnd.bind(this)
     this.onGardenNameClick = this.onGardenNameClick.bind(this)
 
+    this.movementSpeed = this.generateMovementSpeed()
+
     this.anim = {
       x: getInitialX(),
       y: getInitialY(),
@@ -38,6 +40,10 @@ export default class CreatureComponent extends React.Component {
       autoplay: false,
       loop: true
     })
+  }
+
+  generateMovementSpeed() {
+    return 3.5 + (Math.random() * 2.5)
   }
 
   onTouchStart() {
@@ -70,6 +76,7 @@ export default class CreatureComponent extends React.Component {
   }
 
   startTicker() {
+    this.movementSpeed = this.generateMovementSpeed()
     if (!this._tickerId)
       this._tickerId = GlobalTicker.registerListener(this.update)
   }
@@ -105,7 +112,7 @@ export default class CreatureComponent extends React.Component {
 
     // Don't move while in the tapped state
     if (!tapped) {
-      this.anim.x += 4
+      this.anim.x += this.movementSpeed
     }
 
     this.anim.y += Math.sin(time / 10) * 2

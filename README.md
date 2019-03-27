@@ -72,3 +72,31 @@ npm run p:sendCreatureToGarden creature5 beta
 npm run p:sendCreatureToGarden creature6 gamma
 
 npm run p:sendCreatureToGarden creature7 alpha
+
+npm run p:sendCreatureToGarden creature8 beta
+
+npm run p:sendCreatureToGarden creature9 gamma
+
+npm run p:sendCreatureToGarden creature10 alpha
+
+npm run p:sendCreatureToGarden creature11 beta
+
+npm run p:sendCreatureToGarden creature12 gamma
+
+npm run p:sendCreatureToGarden creature13 alpha
+
+npm run p:sendCreatureToGarden creature14 beta
+
+npm run p:sendCreatureToGarden creature15 gamma
+
+npm run p:sendCreatureToGarden creature16 alpha
+
+npm run p:sendCreatureToGarden creature17 beta
+
+npm run p:sendCreatureToGarden creature18 gamma
+
+npm run p:sendCreatureToGarden creature19 alpha
+
+npm run p:sendCreatureToGarden creature20 beta
+
+npm run p:sendCreatureToGarden creature21 gamma
