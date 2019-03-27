@@ -43,7 +43,9 @@ sudo pm2 start npm -- run start:server gamma #Starts server named gamma.
 ## PM2 instructions
 
 See the logs by doing: `sudo pm2 logs`.
+
 See the running processes by doing: `sudo pm2 list`.
+
 Stop all processes by doing: `sudo pm2 stop all`.
 
 
