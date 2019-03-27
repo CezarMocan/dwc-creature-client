@@ -1,7 +1,8 @@
 import { CREATURE_FORCE_MOVE_MS, CLIENT_HEARTBEAT_INACTIVE_THRESHOLD, getGardenConfig, getOtherGardens, getPerformancePhase } from "./config"
+import { getCentralizedPhaseInfo } from './config'
 
 export default class Client {
-  constructor({ id, socket, onDisconnect, onCreatureExit }) {
+  constructor({ id, socket, onDisconnect, onCreatureExit, manager }) {
     this.id = id
     this.socket = socket
     console.log('Client IP: ', this.socket.handshake.address)
@@ -12,6 +13,7 @@ export default class Client {
     this.creatureOwnership = {}
 
     this.heartbeatTimestamp = Date.now()
+    this.manager = manager
 
     this.socketSetup()
   }
@@ -35,10 +37,15 @@ export default class Client {
 
   emitGardenInfo() {
     if (!this.socket) return
+    const centralizedInfo = getCentralizedPhaseInfo()
     this.socket.emit('gardenInfo', {
       localGarden: getGardenConfig(),
       remoteGardens: getOtherGardens(),
-      performancePhase: getPerformancePhase()
+      performancePhase: getPerformancePhase(),
+      centralizedPhaseData: {
+        isPlaying: centralizedInfo.isPlaying,
+        timeOffsetMs: centralizedInfo.isPlaying ? (Date.now() - centralizedInfo.playStartTime) : 0
+      }
     })
   }
 

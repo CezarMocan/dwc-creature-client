@@ -21,7 +21,8 @@ export default class Index extends React.Component {
     this.state = {
       creatures: {},
       gardenConfig: {},
-      centralizedPhaseIsPlaying: false
+      centralizedPhaseIsPlaying: false,
+      centralizedPhasePlayOffset: 0
     }
   }
 
@@ -77,11 +78,13 @@ export default class Index extends React.Component {
     }
   }
 
-  onReceivedGardenInfo({ localGarden, remoteGardens, performancePhase }) {
+  onReceivedGardenInfo({ localGarden, remoteGardens, performancePhase, centralizedPhaseData }) {
     console.log('Performance phase is: ', performancePhase)
+    console.log('CPD: ', centralizedPhaseData)
     this.setState({
       gardenConfig: { localGarden, remoteGardens, performancePhase },
-      centralizedPhaseIsPlaying: false
+      centralizedPhaseIsPlaying: centralizedPhaseData.isPlaying,
+      centralizedPhasePlayOffset: centralizedPhaseData.timeOffsetMs
     })
   }
 
@@ -115,7 +118,7 @@ export default class Index extends React.Component {
   }
 
   render() {
-    const { creatures, gardenConfig, centralizedPhaseIsPlaying } = this.state
+    const { creatures, gardenConfig, centralizedPhaseIsPlaying, centralizedPhasePlayOffset } = this.state
     const gardenName = gardenConfig.localGarden ? gardenConfig.localGarden.name : ''
     const backgroundClass = classnames({
       "garden-info": true,
@@ -138,7 +141,10 @@ export default class Index extends React.Component {
         {
           gardenConfig.performancePhase == PERFORMANCE_PHASES.CENTRALIZED &&
           <div>
-            <CentralizedAnimation playing={centralizedPhaseIsPlaying}/>
+            <CentralizedAnimation
+              playing={centralizedPhaseIsPlaying}
+              timeOffset={centralizedPhasePlayOffset}
+            />
           </div>
         }
 

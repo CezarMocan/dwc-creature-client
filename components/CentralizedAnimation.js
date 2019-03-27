@@ -16,7 +16,7 @@ export default class CentralizedAnimation extends React.Component {
   }
 
   render() {
-    const { playing } = this.props
+    const { playing, timeOffset = 0 } = this.props
     return (
       <div className="creature-birth-container">
         <ZIPImageSequencePlayer
@@ -28,6 +28,7 @@ export default class CentralizedAnimation extends React.Component {
           className="creature-birth"
           imageClassName="creature-birth-image"
           inViewport={true}
+          timeOffset={timeOffset}
         />
       </div>
     )

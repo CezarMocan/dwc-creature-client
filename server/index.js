@@ -7,6 +7,7 @@ import compression from 'compression'
 import { manager as DistributedManager } from './distributedManager'
 import { GARDENS, CREATURES, setGarden, getGardenConfig, getOtherGardens, PERFORMANCE_PHASES, getPerformancePhase, setPerformancePhase } from './config'
 import { isPerformancePhaseCentralized, isPerformancePhaseDecentralized, isPerformancePhaseDistributed } from './config'
+import { centralizedPhaseStartPlay } from './config'
 import { logError, logSuccess } from './log'
 
 if (Object.keys(GARDENS).indexOf(process.argv[2].toLowerCase()) == -1) {
@@ -115,6 +116,7 @@ app.prepare().then(() => {
       logError('Performance phase is not centralized! Doing nothing.', req, res)
       return
     }
+    centralizedPhaseStartPlay()
     DistributedManager.broadcastCentralizedStart()
     logSuccess('Centralized Phase: Creature birth animation starting', req, res)
   })

@@ -29,7 +29,8 @@ class Manager {
       id: socket.id,
       socket: socket,
       onDisconnect: this.removeClient,
-      onCreatureExit: this.onClientCreatureExit
+      onCreatureExit: this.onClientCreatureExit,
+      manager: this
     })
 
     this.clients[socket.id] = client

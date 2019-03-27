@@ -55,14 +55,33 @@ export default class PNGSequencePlayer extends React.Component {
   }
 
   componentDidMount() {
-    const { isPlaying } = this.props
+    const { isPlaying, timeOffset, loop, loopImages } = this.props
+    if (timeOffset) {
+      const currentIndex = this.timeOffsetToFrames(timeOffset, loop, loopImages.length)
+      this.setState({ currentIndex })
+    }
     if (isPlaying) this.play()
   }
 
+  timeOffsetToFrames(timeOffsetMs, loop, noFrames) {
+    let newFrameIndex = parseInt(Math.floor(timeOffsetMs / 1000 * GlobalTicker.fps))
+    if (loop) {
+      newFrameIndex = (newFrameIndex % noFrames)
+    } else {
+      newFrameIndex = Math.min(newFrameIndex, noFrames - 1)
+    }
+    console.log('timeOffsetToFrames: ', timeOffsetMs, newFrameIndex)
+    return newFrameIndex
+  }
+
   componentDidUpdate(oldProps) {
-    const { isPlaying } = this.props
+    const { isPlaying, timeOffset, loop, loopImages } = this.props
     if (isPlaying && !oldProps.isPlaying) this.play()
     if (!isPlaying && oldProps.isPlaying) this.stop()
+    if (timeOffset != oldProps.timeOffset) {
+      const currentIndex = this.timeOffsetToFrames(timeOffset, loop, loopImages.length)
+      this.setState({ currentIndex })
+    }
   }
 
   componentWillUnmount() {
@@ -97,5 +116,6 @@ PNGSequencePlayer.defaultProps = {
   inViewport: true,
   onEnd: () => {},
   withPreload: false,
-  imageClassName: ""
+  imageClassName: "",
+  timeOffset: 0
 }
