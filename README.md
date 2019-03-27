@@ -30,7 +30,7 @@ git pull
 yarn install
 ```
 
-** Make sure to set up the garden IP and ports on each Pi in `constants.js`. **
+**Make sure to set up the garden IP and ports on each Pi in `constants.js`.**
 
 Start servers:
 
