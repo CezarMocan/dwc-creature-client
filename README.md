@@ -12,58 +12,8 @@ Run `npm run dev:server [garden-name]` in order to start the development server 
 
 Run `npm run export` in order to generate a static site.
 
+## Pre-performance setup for each Raspberry Pi
 
-## Performance script
-
-**1.**
-Start servers:
-
-```sh
-npm run start:server alpha #Starts server named alpha.
-npm run start:server beta #Starts server named beta.
-npm run start:server gamma #Starts server named gamma.
-```
-
-They will all be in the centralized phase.
-
-**2.**
-Start playing birth animation *on each server*.
-
-```sh
-curl -d '' http://localhost:3001/centralized/start
-curl -d '' http://localhost:3002/centralized/start
-curl -d '' http://localhost:3003/centralized/start
-```
-
-
-**3.**
-Move to decentralized phase *on each server*
-
-```sh
-curl -d 'phase=decentralized' http://localhost:3001/changePhase
-curl -d 'phase=decentralized' http://localhost:3002/changePhase
-curl -d 'phase=decentralized' http://localhost:3003/changePhase
-```
-
-Send creatures to the 3 gardens, *one per garden*
-
-```sh
-curl -d 'creature=creature1' http://localhost:3001/hello
-curl -d 'creature=creature2' http://localhost:3002/hello
-curl -d 'creature=creature3' http://localhost:3003/hello
-```
-
-**4.**
-
-Move to distributed phase *on each server*
-
-```sh
-curl -d 'phase=distributed' http://localhost:3001/changePhase
-curl -d 'phase=distributed' http://localhost:3002/changePhase
-curl -d 'phase=distributed' http://localhost:3003/changePhase
-```
-
-## Pi Setup
 ```sh
 sudo apt-get update
 sudo apt-get install git
@@ -78,3 +28,57 @@ curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
      echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
      sudo apt-get update && sudo apt-get install yarn
 ```
+
+Install `pm2` on the PI's:
+
+```sh
+npm install pm2@latest -g
+```
+
+Pull repository and install latest dependencies:
+
+```sh
+git pull
+yarn install
+```
+
+** Make sure to set up the garden IP and ports on each Pi in `constants.js`.
+
+Start servers:
+
+```sh
+sudo pm2 start npm -- run start:server alpha #Starts server named alpha.
+sudo pm2 start npm -- run start:server beta #Starts server named beta.
+sudo pm2 start npm -- run start:server gamma #Starts server named gamma.
+```
+
+## PM2 instructions
+
+See the logs by doing: `sudo pm2 logs`.
+See the running processes by doing: `sudo pm2 list`.
+Stop all processes by doing: `sudo pm2 stop all`.
+
+
+## Performance script
+
+**1.**
+
+npm run p:centralizedPlay
+
+**2.**
+
+npm run p:toDecentralized
+
+npm run p:decentralizedCreaturesToGardens
+
+**3.**
+
+npm run p:toDistributed
+
+npm run p:sendCreatureToGarden creature4 alpha
+
+npm run p:sendCreatureToGarden creature5 beta
+
+npm run p:sendCreatureToGarden creature6 gamma
+
+npm run p:sendCreatureToGarden creature7 alpha
