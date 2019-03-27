@@ -17,7 +17,8 @@ export default class CreatureComponent extends React.Component {
     super(props)
     this.onRef = this.onRef.bind(this)
     this.update = this.update.bind(this)
-    this.onClick = this.onClick.bind(this)
+    this.onTouchStart = this.onTouchStart.bind(this)
+    this.onTouchEnd = this.onTouchEnd.bind(this)
     this.onGardenNameClick = this.onGardenNameClick.bind(this)
 
     this.anim = {
@@ -39,16 +40,18 @@ export default class CreatureComponent extends React.Component {
     })
   }
 
-  onClick() {
-    if (this.state.tapped) {
-      this.setState({ tapped: false })
-    } else {
-      this.setState({ tapped: true }, () => {
-        setTimeout(() => {
-          this.setState({ tapped: false })
-        }, CREATURE_TAP_STOP_TIME * 1000)
-      })
-    }
+  onTouchStart() {
+    this.setState({
+      tapped: true
+    }, () => {
+      setTimeout(() => {
+        this.setState({ tapped: false })
+      }, CREATURE_TAP_STOP_TIME * 1000)
+    })
+  }
+
+  onTouchEnd() {
+    this.setState({ tapped: false })
   }
 
   onGardenNameClick(gardenName, evt) {
@@ -190,7 +193,10 @@ export default class CreatureComponent extends React.Component {
         ref={(e) => {this.onRef(e)}}
         className={`creature ${showCreature ? '' : 'hidden'}`}
         style={{transform: `translateX(${this.anim.x}px) translateY(${this.anim.y}px) rotate(${this.anim.rotation}deg)`}}
-        onClick={this.onClick}
+        onTouchStart={this.onTouchStart}
+        onTouchEnd={this.onTouchEnd}
+        onMouseDown={this.onTouchStart}
+        onMouseUp={this.onTouchEnd}
       >
           <PNGSequencePlayer
             loopImages={[...Array(NO_LOOPING_FRAMES).keys()].map(k => `/static/images/creatures/${framesFolder}/${k}.png`)}
