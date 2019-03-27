@@ -8,6 +8,7 @@ import Creature from '../components/Creature'
 import { PERFORMANCE_PHASES } from '../constants'
 import CentralizedAnimation from '../components/CentralizedAnimation'
 import GardenAnimation from '../components/GardenAnimation'
+import SoundController, { SOUND_STATES } from '../components/SoundController'
 
 export default class Index extends React.Component {
   constructor(props) {
@@ -17,13 +18,23 @@ export default class Index extends React.Component {
     this.onReceivedGardenInfo = this.onReceivedGardenInfo.bind(this)
     this.onVisibilityChange = this.onVisibilityChange.bind(this)
     this.centralizedPhaseStartAnimation = this.centralizedPhaseStartAnimation.bind(this)
+    this.onInitializeSound = this.onInitializeSound.bind(this)
+    this.onCentralizedAnimationEnd = this.onCentralizedAnimationEnd.bind(this)
 
     this.state = {
       creatures: {},
       gardenConfig: {},
       centralizedPhaseIsPlaying: false,
-      centralizedPhasePlayOffset: 0
+      centralizedPhasePlayOffset: 0,
+      soundInitialized: false,
+      soundState: SOUND_STATES.CENTRALIZED_PAUSED
     }
+  }
+
+  onInitializeSound() {
+    this.setState({
+      soundInitialized: true
+    })
   }
 
   get isVisible() {
@@ -81,25 +92,46 @@ export default class Index extends React.Component {
   onReceivedGardenInfo({ localGarden, remoteGardens, performancePhase, centralizedPhaseData }) {
     console.log('Performance phase is: ', performancePhase)
     console.log('CPD: ', centralizedPhaseData)
+    let soundState
+    if (performancePhase == PERFORMANCE_PHASES.CENTRALIZED) {
+      soundState = centralizedPhaseData.isPlaying ? SOUND_STATES.CENTRALIZED_PLAYING : SOUND_STATES.CENTRALIZED_PAUSED
+    } else if (performancePhase == PERFORMANCE_PHASES.DECENTRALIZED) {
+      soundState = SOUND_STATES.DECENTRALIZED_NO_CREATURE
+    } else if (performancePhase == PERFORMANCE_PHASES.DISTRIBUTED) {
+      soundState = SOUND_STATES.DISTRIBUTED_NO_CREATURE
+    }
+
     this.setState({
       gardenConfig: { localGarden, remoteGardens, performancePhase },
       centralizedPhaseIsPlaying: centralizedPhaseData.isPlaying,
-      centralizedPhasePlayOffset: centralizedPhaseData.timeOffsetMs
+      centralizedPhasePlayOffset: centralizedPhaseData.timeOffsetMs,
+      soundState
     })
   }
 
   centralizedPhaseStartAnimation() {
-    this.setState({ centralizedPhaseIsPlaying: true })
+    console.log('centralizedPhaseStartAnimation')
+    this.setState({
+      centralizedPhaseIsPlaying: true,
+      soundState: SOUND_STATES.CENTRALIZED_PLAYING
+    })
+  }
+
+  onCentralizedAnimationEnd() {
+    this.setState({
+      soundState: SOUND_STATES.CENTRALIZED_PAUSED
+    })
   }
 
   acquireCreature({ creatureId }) {
     console.log('acquireCreature: ', creatureId)
     const { creatures } = this.state
+    const newCreatures = {
+      ...creatures,
+      [creatureId]: true
+    }
     this.setState({
-      creatures: {
-        ...creatures,
-        [creatureId]: true
-      }
+      creatures: newCreatures
     })
   }
 
@@ -119,6 +151,10 @@ export default class Index extends React.Component {
 
   render() {
     const { creatures, gardenConfig, centralizedPhaseIsPlaying, centralizedPhasePlayOffset } = this.state
+    const { soundInitialized, soundState } = this.state
+
+    console.log('Index render soundState: ', soundState)
+
     const gardenName = gardenConfig.localGarden ? gardenConfig.localGarden.name : ''
     const backgroundClass = classnames({
       "garden-info": true,
@@ -126,7 +162,7 @@ export default class Index extends React.Component {
     })
 
     return (
-      <div>
+      <div onClick={this.onInitializeSound}>
         <Head/>
         { gardenConfig.localGarden &&
           <div className={backgroundClass}>
@@ -134,16 +170,24 @@ export default class Index extends React.Component {
               Garden: {gardenName}
               <br/>
               Phase: { gardenConfig.performancePhase }
+              <br/>
+              Sound state: { soundState }
             </div>
           </div>
         }
 
+        <SoundController
+          initialized={soundInitialized}
+          soundState={soundState}
+        />
+
         {
           gardenConfig.performancePhase == PERFORMANCE_PHASES.CENTRALIZED &&
-          <div>
+          <div key={'CENTRALIZED_DIV'}>
             <CentralizedAnimation
               playing={centralizedPhaseIsPlaying}
               timeOffset={centralizedPhasePlayOffset}
+              onAnimationEnd={this.onCentralizedAnimationEnd}
             />
           </div>
         }

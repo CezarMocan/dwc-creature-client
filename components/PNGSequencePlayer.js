@@ -89,7 +89,7 @@ export default class PNGSequencePlayer extends React.Component {
   }
 
   render() {
-    const { loopImages, loop, onEnd, inViewport, isPlaying, withPreload, imageClassName, ...props } = this.props
+    const { loopImages, loop, onEnd, inViewport, isPlaying, withPreload, imageClassName, timeOffset, ...props } = this.props
     const { currentIndex } = this.state
 
     const currPath = loopImages[currentIndex]

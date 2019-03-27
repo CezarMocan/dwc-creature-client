@@ -4,6 +4,7 @@ import classnames from 'classnames'
 import PNGSequencePlayer from './PNGSequencePlayer'
 import { GlobalTicker } from './Ticker'
 import { PERFORMANCE_PHASES, CREATURES } from '../constants'
+import {Howl, Howler} from 'howler'
 
 const CREATURE_TAP_STOP_TIME = 10
 const NO_LOOPING_FRAMES = 6
@@ -30,6 +31,12 @@ export default class CreatureComponent extends React.Component {
       tapped: false,
       nextGarden: null
     }
+
+    this.creatureSound = new Howl({
+      src: ['/static/audio/walking.mp3'],
+      autoplay: false,
+      loop: true
+    })
   }
 
   onClick() {
@@ -155,17 +162,21 @@ export default class CreatureComponent extends React.Component {
     if (isActive && !oldProps.isActive) {
       this.resetPosition()
       this.startTicker()
+      this.creatureSound.play()
     } else if (!isActive && oldProps.isActive) {
       this.stopTicker()
+      this.creatureSound.pause()
     }
   }
 
   componentWillUnmount() {
     this.stopTicker()
+    this.creatureSound.pause()
   }
 
   componentDidMount() {
-    console.log('Creature componentDidMount')
+    if (this.props.isActive)
+    this.creatureSound.play()
   }
 
   render() {

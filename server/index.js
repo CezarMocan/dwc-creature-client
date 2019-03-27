@@ -42,7 +42,7 @@ app.prepare().then(() => {
 
   if (process.env.NODE_ENV === "production") {
     server.get(
-      /^\/_next\/static\/images\//,
+      /^\/_next\/static\//,
       (_, res, nextHandler) => {
         res.setHeader(
           "Cache-Control",
