@@ -132,7 +132,8 @@ h1.garden-heading {
   position: fixed;
   top: 0;
   left: 0;
-  visibility: hidden;
+  // visibility: hidden;
+  display: none;
 }
 
 .decentralized-animation {
@@ -186,4 +187,13 @@ h1.garden-heading {
 
 .creature-8 {
   transform: scale(0.5, 0.5);
+}
+
+.invisible-text-container {
+  position: fixed;
+  left: 10px;
+  bottom: 10px;
+  max-width: 75vw;
+  font-size: 8pt;
+  opacity: 0;
 }

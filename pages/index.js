@@ -9,6 +9,7 @@ import { PERFORMANCE_PHASES } from '../constants'
 import CentralizedAnimation from '../components/CentralizedAnimation'
 import GardenAnimation from '../components/GardenAnimation'
 import SoundController, { SOUND_STATES } from '../components/SoundController'
+import InvisibleText from '../components/InvisibleText'
 import {Howl, Howler} from 'howler'
 
 export default class Index extends React.Component {
@@ -162,6 +163,9 @@ export default class Index extends React.Component {
     return (
       <div onClick={this.onInitializeSound}>
         <Head/>
+
+        <InvisibleText performancePhase={gardenConfig.performancePhase}/>
+
         { gardenConfig.localGarden &&
           <div className={backgroundClass}>
             <div className="status-info">
