@@ -1,17 +1,5 @@
 # Creature Web Client
 
-## Setup
-
-Run `yarn install` in order to install the dependencies.
-
-Note: This will install `puppeteer`, the headless Google Chrome library, which is a quite large download. I've used it in order to load test the site (using `scripts/test.js`). You can disable the dependency and the site will still run properly.
-
-## Running
-
-Run `npm run dev:server [garden-name]` in order to start the development server for a garden. The `garden-name` parameter can be one of `alpha`, `beta`, `gamma`.
-
-Run `npm run export` in order to generate a static site.
-
 ## Pre-performance setup for each Raspberry Pi
 
 ```sh
@@ -42,7 +30,7 @@ git pull
 yarn install
 ```
 
-** Make sure to set up the garden IP and ports on each Pi in `constants.js`.
+** Make sure to set up the garden IP and ports on each Pi in `constants.js`. **
 
 Start servers:
 
