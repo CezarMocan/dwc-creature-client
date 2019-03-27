@@ -1,5 +1,7 @@
 import React from 'react'
 // import Proton from 'proton-js'
+import {Howl, Howler} from 'howler'
+
 var Proton
 
 const DURATION = 10
@@ -10,6 +12,19 @@ export default class RainParticleSystem extends React.Component {
     this.onContainerRef = this.onContainerRef.bind(this)
     this.tick = this.tick.bind(this)
     this.emitters = []
+
+    this.sounds = [
+      new Howl({
+        src: ['/static/audio/watering.mp3'],
+        autoplay: false,
+        loop: true
+      }),
+      new Howl({
+        src: ['/static/audio/plantGrow.mp3'],
+        autoplay: false,
+        loop: true
+      }),
+    ]
   }
 
   onContainerRef(e) {
@@ -63,6 +78,13 @@ export default class RainParticleSystem extends React.Component {
     this.proton.addRenderer(this.renderer);
   }
 
+  getRandomSound() {
+    if (Math.random() < 0.5)
+      return this.sounds[0]
+    else
+      return this.sounds[1]
+  }
+
   tick() {
     if (this.proton) {
       this.proton.update()
@@ -87,11 +109,15 @@ export default class RainParticleSystem extends React.Component {
       emitter.emit(DURATION);
     })
 
+    this.currentSound = this.getRandomSound()
+    this.currentSound.play()
+
     if (!this._rafId) this.tick()
   }
 
   cancelTick() {
     this.emitters.forEach(emitter => emitter.stop())
+    if (this.currentSound) this.currentSound.pause()
   }
 
   componentDidUpdate(oldProps) {
