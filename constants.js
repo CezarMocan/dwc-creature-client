@@ -44,6 +44,62 @@ export const CREATURES = {
   creature7: {
     folder: 7,
     className: "creature-7"
+  },
+  creature8: {
+    folder: 1,
+    className: "creature-8"
+  },
+  creature9: {
+    folder: 2,
+    className: "creature-3"
+  },
+  creature10: {
+    folder: 3,
+    className: "creature-4"
+  },
+  creature11: {
+    folder: 4,
+    className: "creature-5"
+  },
+  creature12: {
+    folder: 5,
+    className: "creature-8"
+  },
+  creature13: {
+    folder: 6,
+    className: "creature-7"
+  },
+  creature14: {
+    folder: 7,
+    className: "creature-1"
+  },
+  creature15: {
+    folder: 1,
+    className: "creature-3"
+  },
+  creature16: {
+    folder: 2,
+    className: "creature-5"
+  },
+  creature17: {
+    folder: 3,
+    className: "creature-2"
+  },
+  creature18: {
+    folder: 4,
+    className: "creature-4"
+  },
+  creature19: {
+    folder: 5,
+    className: "creature-6"
+  },
+  creature20: {
+    folder: 6,
+    className: "creature-8"
+  },
+  creature21: {
+    folder: 7,
+    className: "creature-1"
   }
 }
 
