@@ -181,7 +181,6 @@ export default class CreatureComponent extends React.Component {
         style={{transform: `translateX(${this.anim.x}px) translateY(${this.anim.y}px) rotate(${this.anim.rotation}deg)`}}
         onClick={this.onClick}
       >
-          {false && creatureId}
           <PNGSequencePlayer
             loopImages={[...Array(NO_LOOPING_FRAMES).keys()].map(k => `/static/images/creatures/${framesFolder}/${k}.png`)}
             isPlaying={isActive}
@@ -190,18 +189,6 @@ export default class CreatureComponent extends React.Component {
             imageClassName="reversed-x"
             inViewport={true}
           />
-          { /*gardenConfig && tapped &&
-            <div className="creature-interaction-dialog">
-              <div className="prompt">Would you like to send me to another garden?</div>
-              { Object.values(gardenConfig.remoteGardens).map((garden, index) => {
-                const gardenClass = classnames({
-                  'garden-option': true,
-                  'garden-option-selected': garden.name == nextGarden
-                })
-                return (<div key={garden.name} className={gardenClass} onClick={this.onGardenNameClick.bind(this, garden.name)}>{garden.name}</div>)
-              })}
-            </div>
-          */}
       </div>
     )
   }
@@ -212,3 +199,16 @@ CreatureComponent.defaultProps = {
   isActive: false,
   creatureId: 0
 }
+
+/*gardenConfig && tapped &&
+  <div className="creature-interaction-dialog">
+    <div className="prompt">Would you like to send me to another garden?</div>
+    { Object.values(gardenConfig.remoteGardens).map((garden, index) => {
+      const gardenClass = classnames({
+        'garden-option': true,
+        'garden-option-selected': garden.name == nextGarden
+      })
+      return (<div key={garden.name} className={gardenClass} onClick={this.onGardenNameClick.bind(this, garden.name)}>{garden.name}</div>)
+    })}
+  </div>
+*/
