@@ -9,6 +9,7 @@ import { PERFORMANCE_PHASES } from '../constants'
 import CentralizedAnimation from '../components/CentralizedAnimation'
 import GardenAnimation from '../components/GardenAnimation'
 import SoundController, { SOUND_STATES } from '../components/SoundController'
+import {Howl, Howler} from 'howler'
 
 export default class Index extends React.Component {
   constructor(props) {
@@ -66,6 +67,7 @@ export default class Index extends React.Component {
   }
 
   socketSetup() {
+    Howler.mute(false)
     if (!this.socket) {
       this.socket = io();
       this.socket.on('centralizedPhaseStartAnimation', this.centralizedPhaseStartAnimation)
@@ -80,6 +82,7 @@ export default class Index extends React.Component {
   }
 
   socketTeardown() {
+    Howler.mute(true)
     this.setState({ creatures: {} })
     if (this.socket) {
       this.socket.disconnect()
@@ -91,8 +94,6 @@ export default class Index extends React.Component {
   }
 
   onReceivedGardenInfo({ localGarden, remoteGardens, performancePhase, centralizedPhaseData }) {
-    console.log('Performance phase is: ', performancePhase)
-    console.log('CPD: ', centralizedPhaseData)
     let soundState
     if (performancePhase == PERFORMANCE_PHASES.CENTRALIZED) {
       soundState = centralizedPhaseData.isPlaying ? SOUND_STATES.CENTRALIZED_PLAYING : SOUND_STATES.CENTRALIZED_PAUSED
@@ -111,7 +112,6 @@ export default class Index extends React.Component {
   }
 
   centralizedPhaseStartAnimation() {
-    console.log('centralizedPhaseStartAnimation')
     this.setState({
       centralizedPhaseIsPlaying: true,
       soundState: SOUND_STATES.CENTRALIZED_PLAYING
@@ -125,7 +125,6 @@ export default class Index extends React.Component {
   }
 
   acquireCreature({ creatureId }) {
-    console.log('acquireCreature: ', creatureId)
     const { creatures } = this.state
     const newCreatures = {
       ...creatures,
@@ -153,8 +152,6 @@ export default class Index extends React.Component {
   render() {
     const { creatures, gardenConfig, centralizedPhaseIsPlaying, centralizedPhasePlayOffset } = this.state
     const { soundInitialized, soundState } = this.state
-
-    console.log('Index render soundState: ', soundState)
 
     const gardenName = gardenConfig.localGarden ? gardenConfig.localGarden.name : ''
     const backgroundClass = classnames({
