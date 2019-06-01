@@ -16,6 +16,8 @@ export default class PNGSequencePlayer extends React.Component {
     if (props.withPreload) {
       this.preload()
     }
+
+    this.preventDrag = this.preventDrag.bind(this)
   }
 
   async preload() {
@@ -88,6 +90,10 @@ export default class PNGSequencePlayer extends React.Component {
     this.stop()
   }
 
+  preventDrag(event) {
+    if (event.preventDefault) event.preventDefault()
+  }
+
   render() {
     const { loopImages, loop, onEnd, inViewport, isPlaying, withPreload, imageClassName, timeOffset, ...props } = this.props
     const { currentIndex } = this.state
@@ -102,7 +108,7 @@ export default class PNGSequencePlayer extends React.Component {
     return (
       <div {...props}>
         <div className="png-sequence-container">
-          <img src={currPath} className={imageCls} draggable={false}/>
+          <img src={currPath} className={imageCls} draggable={false} onMouseDown={this.preventDrag}/>
         </div>
       </div>
     )
