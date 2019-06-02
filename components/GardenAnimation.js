@@ -38,15 +38,44 @@ export default class DecentralizedAnimation extends React.Component {
       touching: false,
       touchX: 0,
       touchY: 0,
-      plantGrowing: getNoGrowthState(),
+      plantGrowing: {},
       plants: [],
-      plantsInfo: {}
+      plantsInfo: {},
+      ready: false,
+      selectedSeedId: -1,
+      selectedSeedOffsetX: 0,
+      selectedSeedOffsetY: 0
     }
 
     this.onTouchStart = this.onTouchStart.bind(this)
     this.onTouchMove = this.onTouchMove.bind(this)
     this.onTouchEnd = this.onTouchEnd.bind(this)
     this.updatePlantGrowth = this.updatePlantGrowth.bind(this)
+    this.onSeedTouchStart = this.onSeedTouchStart.bind(this)
+    this.onSeedTouchMove = this.onSeedTouchMove.bind(this)
+    this.onSeedTouchEnd = this.onSeedTouchEnd.bind(this)
+  }
+
+  async generatePlantFrames(plantId) {
+    const zipPath = PLANTS[plantId].zipPath
+    const noFrames = PLANTS[plantId].noFrames
+    const frameFilenameFn = PLANTS[plantId].frameFilenameFn
+    const images = await unzipImagesFromArchive(zipPath, noFrames, frameFilenameFn)
+    return {
+      noFrames,
+      images
+    }
+  }
+
+  async generateAllPlantsFrames() {
+    console.log('Generate all frames start')
+    this.allPlantsFrames = {}
+    for (let i in PLANTS) {
+      console.log('i is: ', i)
+      // const plantId = Object.keys(PLA)
+      this.allPlantsFrames[i] = await this.generatePlantFrames(i)
+    }
+    console.log('Generate all frames done')
   }
 
   get isDecentralizedPhase() {
@@ -76,7 +105,9 @@ export default class DecentralizedAnimation extends React.Component {
     return Object.keys(picked).map(k => arr[k])
   }
 
-  async generateLayout() {
+  generateLayout() {
+    return
+
     let plants, positions
 
     // if (true) {
@@ -94,19 +125,9 @@ export default class DecentralizedAnimation extends React.Component {
 
     let plantsInfo = {}
     for (let index = 0; index < plants.length; index++) {
-      const p = plants[index]
-      const zipPath = PLANTS[p].zipPath
-      const noFrames = PLANTS[p].noFrames
-      const frameFilenameFn = PLANTS[p].frameFilenameFn
-      const images = await unzipImagesFromArchive(zipPath, noFrames, frameFilenameFn)
-
-      plantsInfo[p] = {
-        noFrames,
-        images,
-        ...positions[index]
-      }
+      const plantId = plants[index]
+      plantsInfo[index] = { ...this.allPlantsFrames[plantId], ...positions[index] }
     }
-
 
     this.setState({ plants, plantsInfo })
   }
@@ -124,16 +145,16 @@ export default class DecentralizedAnimation extends React.Component {
 
   updatePlantGrowth() {
     const { touching, touchX, touchY, plantsInfo } = this.state
-    const plantGrowing = getNoGrowthState()
+    const plantGrowing = {}//getNoGrowthState()
 
     if (touching) {
       const touchXPct = touchX / window.innerWidth * 100
       const touchYPct = touchY / window.innerHeight * 100
 
-      this.plants.forEach(key => {
-        const p = plantsInfo[key]
+      this.plants.forEach((key, index) => {
+        const p = plantsInfo[index]
         if (this.touchInRadius(touchXPct, touchYPct, p.xPct, p.yPct, p.radius))
-          plantGrowing[key] = true
+          plantGrowing[index] = true
       })
     }
 
@@ -189,11 +210,83 @@ export default class DecentralizedAnimation extends React.Component {
   }
 
   async componentDidMount() {
+    await this.generateAllPlantsFrames()
     this.generateLayout()
+    this.setState({ ready: true })
+  }
+
+  onSeedTouchStart(evt, plantId) {
+    evt.stopPropagation()
+
+    // If we've already selected another plant, do nothing
+    const { selectedSeedId } = this.state
+    if (selectedSeedId != -1) return
+
+    // Update previous position
+    this.seedTouch = { x: evt.clientX, y: evt.clientY }
+    this.setState({ selectedSeedId: plantId })
+  }
+
+  onSeedTouchMove(evt, plantId) {
+    evt.stopPropagation()
+
+    // If we've already selected another plant, do nothing
+    const { selectedSeedId } = this.state
+    if (selectedSeedId != plantId) return
+
+    const d = { x: evt.clientX - this.seedTouch.x, y: evt.clientY - this.seedTouch.y }
+    this.seedTouch = { x: evt.clientX, y: evt.clientY }
+
+    const { selectedSeedOffsetX, selectedSeedOffsetY } = this.state
+
+    this.setState({
+      selectedSeedOffsetX: selectedSeedOffsetX + d.x,
+      selectedSeedOffsetY: selectedSeedOffsetY + d.y
+    })
+  }
+
+  onSeedTouchEnd(evt, plantId) {
+    evt.stopPropagation()
+
+    // If we've already selected another plant, do nothing
+    const { selectedSeedId } = this.state
+    if (selectedSeedId != plantId) return
+
+    const xPct = evt.clientX / window.innerWidth * 100
+    const yPct = evt.clientY / window.innerHeight * 100
+    const radius = 10
+
+    this.addPlant(plantId, xPct, yPct, radius)
+
+    this.setState({
+      selectedSeedId: -1,
+      selectedSeedOffsetX: 0,
+      selectedSeedOffsetY: 0,
+    })
+  }
+
+  addPlant(plantId, xPct, yPct, radius) {
+    const { plants, plantsInfo } = this.state
+
+    const index = plants.length
+    const newPlants = [...plants, plantId]//plants.slice(0).push(plantId)
+    const newPlantsInfo = {
+      ...plantsInfo,
+      [index]: { ...this.allPlantsFrames[plantId], xPct, yPct, radius }
+    }
+    // newPlantsInfo[index] = { ...this.allPlantsFrames[plantId], xPct, yPct, radius }
+
+    console.log('addPlant: ', plants, newPlants, plantsInfo, newPlantsInfo)
+
+    this.setState({ plants: newPlants, plantsInfo: newPlantsInfo })
   }
 
   render() {
-    const { touching, touchX, touchY, plantGrowing, plantsInfo } = this.state
+    const { touching, touchX, touchY, plantGrowing, plantsInfo, ready } = this.state
+    const { selectedSeedId, selectedSeedOffsetX, selectedSeedOffsetY } = this.state
+
+    if (!ready) return null
+
     return (
       <div className="decentralized-animation"
         onTouchStart={this.onTouchStart}
@@ -203,17 +296,45 @@ export default class DecentralizedAnimation extends React.Component {
         onMouseMove={this.onTouchMove}
         onMouseUp={this.onTouchEnd}
       >
-        { this.plants.map(k => {
+        { this.plants.map((k, index) => {
           return (<Plant
-            key={`plant-${k}`}
-            obj={plantsInfo[k]}
-            growing={plantGrowing[k] || !this.isDecentralizedPhase}
-            xPct={plantsInfo[k].xPct}
-            yPct={plantsInfo[k].yPct}
-            widthPct={2 * plantsInfo[k].radius}/>)
+            key={`plant-${index}`}
+            obj={plantsInfo[index]}
+            plantId={k}
+            growing={plantGrowing[index] || !this.isDecentralizedPhase}
+            xPct={plantsInfo[index].xPct}
+            yPct={plantsInfo[index].yPct}
+            widthPct={2 * plantsInfo[index].radius}/>)
         })}
         { this.isDecentralizedPhase &&
           <RainParticleSystem active={touching} x={touchX} y={touchY}/>
+        }
+        {
+          this.isDecentralizedPhase &&
+          <div className="seeds-collection">
+            { Object.keys(PLANTS).map(id => {
+              const offsetX = selectedSeedId == id ? selectedSeedOffsetX : 0
+              const offsetY = selectedSeedId == id ? selectedSeedOffsetY : 0
+              return (
+                <Plant
+                  key={`seed-plant-${id}`}
+                  obj={this.allPlantsFrames[id]}
+                  plantId={id}
+                  growing={false}
+                  xPct={100 / 8 * id}
+                  yPct={50}
+                  widthPct={10}
+                  xOffsetPx={offsetX}
+                  yOffsetPx={offsetY}
+                  draggable={true}
+                  onTouchStart={this.onSeedTouchStart}
+                  onTouchMove={this.onSeedTouchMove}
+                  onTouchEnd={this.onSeedTouchEnd}
+                  showGrown={true}
+                />
+              )
+            })}
+          </div>
         }
       </div>
     )
