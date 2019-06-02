@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import classnames from 'classnames'
 import io from 'socket.io-client'
+import {Howl, Howler} from 'howler'
 import Style from '../static/styles/main.less'
 import Head from '../components/Head'
 import Creature from '../components/Creature'
@@ -10,7 +11,8 @@ import CentralizedAnimation from '../components/CentralizedAnimation'
 import GardenAnimation from '../components/GardenAnimation'
 import SoundController, { SOUND_STATES } from '../components/SoundController'
 import InvisibleText from '../components/InvisibleText'
-import {Howl, Howler} from 'howler'
+import CreatureContextProvider from '../context/CreatureContext'
+import CreatureProgrammingInput from '../components/CreatureProgrammingInput'
 
 export default class Index extends React.Component {
   constructor(props) {
@@ -161,60 +163,66 @@ export default class Index extends React.Component {
     })
 
     return (
-      <div onClick={this.onInitializeSound}>
-        <Head/>
+      <CreatureContextProvider>
 
-        <InvisibleText performancePhase={gardenConfig.performancePhase}/>
+        <div onClick={this.onInitializeSound}>
+          <Head/>
 
-        { gardenConfig.localGarden &&
-          <div className={backgroundClass}>
-            <div className="status-info">
-              Garden: {gardenName}
-              <br/>
-              Phase: { gardenConfig.performancePhase }
-              <br/>
-              Sound state: { soundState }
+          <InvisibleText performancePhase={gardenConfig.performancePhase}/>
+
+          { gardenConfig.localGarden &&
+            <div className={backgroundClass}>
+              <div className="status-info">
+                Garden: {gardenName}
+                <br/>
+                Phase: { gardenConfig.performancePhase }
+                <br/>
+                Sound state: { soundState }
+              </div>
             </div>
-          </div>
-        }
+          }
 
-        <SoundController
-          initialized={soundInitialized}
-          soundState={soundState}
-        />
+          <SoundController
+            initialized={soundInitialized}
+            soundState={soundState}
+          />
 
-        {
-          gardenConfig.performancePhase == PERFORMANCE_PHASES.CENTRALIZED &&
-          <div key={'CENTRALIZED_DIV'}>
-            <CentralizedAnimation
-              playing={centralizedPhaseIsPlaying}
-              timeOffset={centralizedPhasePlayOffset}
-              onAnimationEnd={this.onCentralizedAnimationEnd}
-            />
-          </div>
-        }
+          {
+            gardenConfig.performancePhase == PERFORMANCE_PHASES.CENTRALIZED &&
+            <div key={'CENTRALIZED_DIV'}>
+              <CentralizedAnimation
+                playing={centralizedPhaseIsPlaying}
+                timeOffset={centralizedPhasePlayOffset}
+                onAnimationEnd={this.onCentralizedAnimationEnd}
+              />
+            </div>
+          }
 
-        {
-          (gardenConfig.performancePhase == PERFORMANCE_PHASES.DECENTRALIZED ||
+          {
+            (gardenConfig.performancePhase == PERFORMANCE_PHASES.DECENTRALIZED ||
+              gardenConfig.performancePhase == PERFORMANCE_PHASES.DISTRIBUTED) &&
+            <div>
+              <GardenAnimation gardenConfig={gardenConfig}/>
+            </div>
+          }
+
+          { (gardenConfig.performancePhase == PERFORMANCE_PHASES.DECENTRALIZED ||
             gardenConfig.performancePhase == PERFORMANCE_PHASES.DISTRIBUTED) &&
-          <div>
-            <GardenAnimation gardenConfig={gardenConfig}/>
-          </div>
-        }
+            Object.keys(creatures).map((creatureId, index) => {
+              return <Creature
+                key={creatureId}
+                creatureId={creatureId}
+                isActive={creatures[creatureId]}
+                onExit={this.onCreatureExit}
+                gardenConfig={gardenConfig}
+              />
+            })
+          }
 
-        { (gardenConfig.performancePhase == PERFORMANCE_PHASES.DECENTRALIZED ||
-          gardenConfig.performancePhase == PERFORMANCE_PHASES.DISTRIBUTED) &&
-          Object.keys(creatures).map((creatureId, index) => {
-            return <Creature
-              key={creatureId}
-              creatureId={creatureId}
-              isActive={creatures[creatureId]}
-              onExit={this.onCreatureExit}
-              gardenConfig={gardenConfig}
-            />
-          })
-        }
-      </div>
+          <CreatureProgrammingInput/>
+        </div>
+
+      </CreatureContextProvider>
     )
   }
 }

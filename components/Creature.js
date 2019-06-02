@@ -5,6 +5,7 @@ import PNGSequencePlayer from './PNGSequencePlayer'
 import { GlobalTicker } from './Ticker'
 import { PERFORMANCE_PHASES, CREATURES } from '../constants'
 import {Howl, Howler} from 'howler'
+import { withCreatureContext } from '../context/CreatureContext'
 
 const CREATURE_TAP_STOP_TIME = 10
 const NO_LOOPING_FRAMES = 6
@@ -12,7 +13,7 @@ const NO_LOOPING_FRAMES = 6
 const getInitialX = () => -100
 const getInitialY = () => window.innerHeight ? (window.innerHeight / 2 - 50) : 250
 
-export default class CreatureComponent extends React.Component {
+class CreatureComponent extends React.Component {
   constructor(props) {
     super(props)
     this.onRef = this.onRef.bind(this)
@@ -47,17 +48,22 @@ export default class CreatureComponent extends React.Component {
   }
 
   onTouchStart() {
-    this.setState({
-      tapped: true
-    }, () => {
-      setTimeout(() => {
-        this.setState({ tapped: false })
-      }, CREATURE_TAP_STOP_TIME * 1000)
+    // this.setState({
+    //   tapped: true
+    // }, () => {
+    //   setTimeout(() => {
+    //     this.setState({ tapped: false })
+    //   }, CREATURE_TAP_STOP_TIME * 1000)
+    // })
+    const { toggleProgrammingInterface, creatureId } = this.props
+
+    this.setState({ tapped: !this.state.tapped }, () => {
+      toggleProgrammingInterface(creatureId)
     })
   }
 
   onTouchEnd() {
-    this.setState({ tapped: false })
+    // this.setState({ tapped: false })
   }
 
   onGardenNameClick(gardenName, evt) {
@@ -223,6 +229,13 @@ CreatureComponent.defaultProps = {
   isActive: false,
   creatureId: 0
 }
+
+export default withCreatureContext((context, props) => ({
+  // programmingInterfaceOpen: context.programmingInterfaceOpen,
+  // programmedCreatureId: context.programmedCreatureId,
+  // action
+  toggleProgrammingInterface: context.action.toggleProgrammingInterface
+}))(CreatureComponent)
 
 /*gardenConfig && tapped &&
   <div className="creature-interaction-dialog">
