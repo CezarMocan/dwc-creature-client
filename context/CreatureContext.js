@@ -1,10 +1,12 @@
 import React from 'react'
+import { parseRawCommand } from '../modules/CommandProcessor'
 
 const CreatureContext = React.createContext()
 
 export default class CreatureContextProvider extends React.Component {
   state = {
     programmingInterfaceOpen: false,
+    programmingInterfaceLastCommand: '',
     programmedCreatureId: null,
 
     action: this
@@ -20,6 +22,12 @@ export default class CreatureContextProvider extends React.Component {
         programmedCreatureId: creatureId
       })
     }
+  }
+
+  programmingInterfaceSubmitCommand = (command) => {
+    if (!this.state.programmingInterfaceOpen) return
+    const processedCommand = parseRawCommand(command)
+    this.setState({ programmingInterfaceLastCommand: processedCommand })
   }
 
   render() {

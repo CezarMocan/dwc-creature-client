@@ -6,9 +6,11 @@ import { GlobalTicker } from './Ticker'
 import { PERFORMANCE_PHASES, CREATURES } from '../constants'
 import {Howl, Howler} from 'howler'
 import { withCreatureContext } from '../context/CreatureContext'
+import { commandTypes } from '../modules/CommandProcessor'
 
 const CREATURE_TAP_STOP_TIME = 10
 const NO_LOOPING_FRAMES = 6
+const JUMP_DURATION = 1
 
 const getInitialX = () => -100
 const getInitialY = () => window.innerHeight ? (window.innerHeight / 2 - 50) : 250
@@ -28,12 +30,15 @@ class CreatureComponent extends React.Component {
       x: getInitialX(),
       y: getInitialY(),
       rotation: 0,
-      rotationSgn: 1
+      rotationSgn: 1,
+      jumping: false,
+      jumpStartTime: 0
     }
 
     this.state = {
       tapped: false,
-      nextGarden: null
+      nextGarden: null,
+      isAnimating: true
     }
 
     this.creatureSound = new Howl({
@@ -121,14 +126,26 @@ class CreatureComponent extends React.Component {
       this.anim.x += this.movementSpeed
     }
 
+    let jumpValue = 0
+
     this.anim.y += Math.sin(time / 10) * 2
+    if (this.anim.jumping) {
+      const inJumpTime = (time - this.anim.jumpStartTime) / 1000
+      if (inJumpTime > JUMP_DURATION) {
+        this.anim.jumping = false
+      } else {
+        const sinParam = inJumpTime / JUMP_DURATION * (Math.PI)
+        jumpValue = -Math.sin(sinParam) * 80
+        console.log('jumpValue: ', jumpValue)
+      }
+    }
 
     this.anim.rotation += Math.abs(Math.sin(time) * Math.cos(time)) * this.anim.rotationSgn
     if (Math.abs(this.anim.rotation) > 10) {
       this.anim.rotationSgn *= -1
     }
 
-    this._e.style.transform = `translateX(${this.anim.x}px) translateY(${this.anim.y + creatureYOffset}px) rotate(${this.anim.rotation}deg)`
+    this._e.style.transform = `translateX(${this.anim.x}px) translateY(${this.anim.y + creatureYOffset + jumpValue}px) rotate(${this.anim.rotation}deg)`
   }
 
   getNextGarden() {
@@ -150,7 +167,8 @@ class CreatureComponent extends React.Component {
 
   update() {
     const { isActive, onExit, creatureId } = this.props
-    if (!isActive) return
+    const { isAnimating } = this.state
+    if (!isActive || !isAnimating) return
 
     this.updateCreaturePosition()
 
@@ -169,12 +187,44 @@ class CreatureComponent extends React.Component {
   shouldComponentUpdate(newProps, newState) {
     if (newProps.isActive != this.props.isActive) return true
     if (newState.tapped != this.state.tapped) return true
+    if (newState.isAnimating != this.state.isAnimating) return true
     if (newState.nextGarden != this.state.nextGarden) return true
+    if (newProps.programmingInterfaceOpen != this.props.programmingInterfaceOpen) return true
+    if (newProps.programmingInterfaceLastCommand != this.props.programmingInterfaceLastCommand &&
+      newProps.programmedCreatureId == this.props.creatureId) return true
+
     return false
   }
 
+  processProgrammingCommand(command) {
+    const { toggleProgrammingInterface, creatureId } = this.props
+    switch (command.type) {
+      case commandTypes.JUMP:
+        console.log('JUMP')
+        this.anim.jumping = true
+        this.anim.jumpStartTime = Date.now()
+        break
+      case commandTypes.TURN_AROUND:
+        console.log('TURN_AROUND')
+        break
+      case commandTypes.STOP:
+        console.log('STOP')
+        this.setState({ isAnimating: false })
+        break
+      case commandTypes.MOVE:
+        console.log('MOVE')
+        this.setState({ isAnimating: true })
+        break
+      case commandTypes.CONTINUE:
+        console.log('CONTINUE')
+        this.setState({ isAnimating: true, tapped: false })
+        toggleProgrammingInterface(creatureId)
+        break
+    }
+  }
+
   componentDidUpdate(oldProps) {
-    const { isActive } = this.props
+    const { isActive, programmingInterfaceLastCommand, creatureId } = this.props
     if (isActive && !oldProps.isActive) {
       this.resetPosition()
       this.startTicker()
@@ -183,9 +233,18 @@ class CreatureComponent extends React.Component {
       this.stopTicker()
       this.creatureSound.pause()
     }
+
+    if (programmingInterfaceLastCommand != oldProps.programmingInterfaceLastCommand &&
+        creatureId == this.props.programmedCreatureId) {
+      this.processProgrammingCommand(programmingInterfaceLastCommand)
+    }
   }
 
   componentWillUnmount() {
+    const { toggleProgrammingInterface, programmedCreatureId, creatureId } = this.props
+    if (programmedCreatureId == creatureId) {
+      toggleProgrammingInterface(creatureId)
+    }
     this.stopTicker()
     this.creatureSound.pause()
   }
@@ -197,7 +256,7 @@ class CreatureComponent extends React.Component {
 
   render() {
     const { isActive, creatureId, gardenConfig } = this.props
-    const { tapped, nextGarden } = this.state
+    const { tapped, nextGarden, isAnimating } = this.state
     const showCreature = isActive
     const framesFolder = CREATURES[creatureId].folder
     const creatureClassName = CREATURES[creatureId].className
@@ -213,7 +272,7 @@ class CreatureComponent extends React.Component {
       >
           <PNGSequencePlayer
             loopImages={[...Array(NO_LOOPING_FRAMES).keys()].map(k => `/static/images/creatures/${framesFolder}/${k}.png`)}
-            isPlaying={isActive}
+            isPlaying={isActive && isAnimating}
             loop={true}
             className={creatureClassName}
             imageClassName="reversed-x"
@@ -231,8 +290,9 @@ CreatureComponent.defaultProps = {
 }
 
 export default withCreatureContext((context, props) => ({
-  // programmingInterfaceOpen: context.programmingInterfaceOpen,
-  // programmedCreatureId: context.programmedCreatureId,
+  programmingInterfaceLastCommand: context.programmingInterfaceLastCommand,
+  programmingInterfaceOpen: context.programmingInterfaceOpen,
+  programmedCreatureId: context.programmedCreatureId,
   // action
   toggleProgrammingInterface: context.action.toggleProgrammingInterface
 }))(CreatureComponent)
