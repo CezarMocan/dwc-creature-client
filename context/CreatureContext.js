@@ -12,6 +12,13 @@ export default class CreatureContextProvider extends React.Component {
     action: this
   }
 
+  closeProgrammingInterface = () => {
+    this.setState({
+      programmingInterfaceOpen: false,
+      programmedCreatureId: null
+    })
+  }
+
   toggleProgrammingInterface = (creatureId) => {
     const { programmedCreatureId, programmingInterfaceOpen } = this.state
     if (creatureId == programmedCreatureId) {

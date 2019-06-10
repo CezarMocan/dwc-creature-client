@@ -211,9 +211,9 @@ class CreatureComponent extends React.Component {
   }
 
   componentWillUnmount() {
-    const { toggleProgrammingInterface, programmedCreatureId, creatureId } = this.props
+    const { closeProgrammingInterface, programmedCreatureId, creatureId } = this.props
     if (programmedCreatureId == creatureId) {
-      toggleProgrammingInterface(creatureId)
+      closeProgrammingInterface()
     }
     this.stopTicker()
     this.creatureSound.pause()
@@ -276,11 +276,12 @@ CreatureComponent.defaultProps = {
 }
 
 export default withCreatureContext((context, props) => ({
-  programmingInterfaceLastMessage: context ? context.programmingInterfaceLastMessage : null,
-  programmingInterfaceOpen: context ? context.programmingInterfaceOpen : null,
-  programmedCreatureId: context ? context.programmedCreatureId : null,
+  programmingInterfaceLastMessage: context.programmingInterfaceLastMessage,
+  programmingInterfaceOpen: context.programmingInterfaceOpen,
+  programmedCreatureId: context.programmedCreatureId,
   // action
-  toggleProgrammingInterface: context ? context.action.toggleProgrammingInterface : () => {}
+  toggleProgrammingInterface: context.action.toggleProgrammingInterface,
+  closeProgrammingInterface: context.action.closeProgrammingInterface
 }))(CreatureComponent)
 
 /*gardenConfig && tapped &&
