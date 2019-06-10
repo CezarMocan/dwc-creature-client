@@ -18,7 +18,7 @@ if (Object.keys(GARDENS).indexOf(process.argv[2].toLowerCase()) == -1) {
 }
 
 setGarden(process.argv[2])
-setPerformancePhase(PERFORMANCE_PHASES.DISTRIBUTED)
+// setPerformancePhase(PERFORMANCE_PHASES.DISTRIBUTED)
 // DistributedManager.helloCreature("creature1")
 
 const GARDEN_CONFIG = getGardenConfig()
@@ -62,7 +62,7 @@ app.prepare().then(() => {
   })
 
   server.get('*', (req, res, next) => {
-    console.log('Request: ', req.originalUrl)
+    // console.log('Request: ', req.originalUrl)
     if (req.originalUrl.indexOf('/stats') == 0) return next()
     if (req.originalUrl.indexOf('/hello') == 0) return next()
     if (req.originalUrl.indexOf('/goodbye') == 0) return next()
