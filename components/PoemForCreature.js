@@ -1,7 +1,5 @@
 import React from 'react'
-import classnames from 'classnames'
-import { PERFORMANCE_PHASES, CREATURES } from '../constants'
-import Style from '../static/styles/main.less'
+import { CREATURES } from '../constants'
 import PNGSequencePlayer from '../components/PNGSequencePlayer'
 import { getPromise } from '../utils/xhr'
 
@@ -15,8 +13,8 @@ export default class PoemCreature extends React.Component {
     }
   }
   async componentDidMount() {
-    // const { creatureId } = this.props
-    const creatureId = 'creature1'
+    const { creatureId } = this.props
+    // const creatureId = 'creature1'
 
     const allMessages = await getPromise('/savedMessages')
     console.log('allMessages: ', allMessages)
@@ -25,7 +23,7 @@ export default class PoemCreature extends React.Component {
   }
   render() {
     const { messages } = this.state    
-    const creatureId = 'creature1'
+    const { creatureId } = this.props
     const framesFolder = CREATURES[creatureId].folder
 
     return (
