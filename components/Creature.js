@@ -52,14 +52,12 @@ class CreatureComponent extends React.Component {
   }
 
   onTouchStart() {
-    // this.setState({
-    //   tapped: true
-    // }, () => {
-    //   setTimeout(() => {
-    //     this.setState({ tapped: false })
-    //   }, CREATURE_TAP_STOP_TIME * 1000)
-    // })
-    const { toggleProgrammingInterface, creatureId } = this.props
+    const { toggleProgrammingInterface, creatureId, gardenConfig } = this.props
+
+    // Tapping and sending messages with the creatures only works in distributed
+    if (!gardenConfig || gardenConfig.performancePhase !== PERFORMANCE_PHASES.DISTRIBUTED) {
+      return
+    }
 
     this.setState({ tapped: !this.state.tapped }, () => {
       toggleProgrammingInterface(creatureId)
