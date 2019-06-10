@@ -13,7 +13,7 @@ const NO_LOOPING_FRAMES = 6
 const JUMP_DURATION = 1
 
 const getInitialX = () => -100
-const getInitialY = () => window.innerHeight ? (window.innerHeight / 2 - 50) : 250
+const getInitialY = () => (window && window.innerHeight) ? (window.innerHeight / 2 - 50) : 250
 
 class CreatureComponent extends React.Component {
   constructor(props) {
@@ -37,8 +37,7 @@ class CreatureComponent extends React.Component {
 
     this.state = {
       tapped: false,
-      nextGarden: null,
-      isAnimating: true
+      nextGarden: null
     }
 
     this.creatureSound = new Howl({
@@ -166,8 +165,7 @@ class CreatureComponent extends React.Component {
   }
 
   update() {
-    const { isActive, onExit, creatureId } = this.props
-    const { isAnimating } = this.state
+    const { isActive, isAnimating, onExit, creatureId } = this.props
     if (!isActive || !isAnimating) return
 
     this.updateCreaturePosition()
@@ -187,7 +185,7 @@ class CreatureComponent extends React.Component {
   shouldComponentUpdate(newProps, newState) {
     if (newProps.isActive != this.props.isActive) return true
     if (newState.tapped != this.state.tapped) return true
-    if (newState.isAnimating != this.state.isAnimating) return true
+    if (newProps.isAnimating != this.props.isAnimating) return true
     if (newState.nextGarden != this.state.nextGarden) return true
     if (newProps.programmingInterfaceOpen != this.props.programmingInterfaceOpen) return true
     if (newProps.programmingInterfaceLastMessage != this.props.programmingInterfaceLastMessage &&
@@ -224,13 +222,12 @@ class CreatureComponent extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.isActive)
-    this.creatureSound.play()
+    if (this.props.isActive) 
+      this.creatureSound.play()
   }
 
   render() {
-    const { isActive, creatureId, gardenConfig, messages } = this.props
-    const { tapped, nextGarden, isAnimating } = this.state
+    const { isActive, isAnimating, creatureId, messages } = this.props
     const showCreature = isActive
     const framesFolder = CREATURES[creatureId].folder
     const creatureClassName = CREATURES[creatureId].className
@@ -275,16 +272,17 @@ class CreatureComponent extends React.Component {
 CreatureComponent.defaultProps = {
   onExit: () => {},
   isActive: false,
+  isAnimating: true,
   creatureId: 0,
   messages: []
 }
 
 export default withCreatureContext((context, props) => ({
-  programmingInterfaceLastMessage: context.programmingInterfaceLastMessage,
-  programmingInterfaceOpen: context.programmingInterfaceOpen,
-  programmedCreatureId: context.programmedCreatureId,
+  programmingInterfaceLastMessage: context ? context.programmingInterfaceLastMessage : null,
+  programmingInterfaceOpen: context ? context.programmingInterfaceOpen : null,
+  programmedCreatureId: context ? context.programmedCreatureId : null,
   // action
-  toggleProgrammingInterface: context.action.toggleProgrammingInterface
+  toggleProgrammingInterface: context ? context.action.toggleProgrammingInterface : () => {}
 }))(CreatureComponent)
 
 /*gardenConfig && tapped &&

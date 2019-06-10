@@ -5,6 +5,7 @@ import ioModule from 'socket.io'
 import httpModule from 'http'
 import compression from 'compression'
 import { manager as DistributedManager } from './distributedManager'
+import MessageManager from './messageManager'
 import { GARDENS, CREATURES, setGarden, getGardenConfig, getOtherGardens, PERFORMANCE_PHASES, getPerformancePhase, setPerformancePhase } from './config'
 import { isPerformancePhaseCentralized, isPerformancePhaseDecentralized, isPerformancePhaseDistributed } from './config'
 import { centralizedPhaseStartPlay } from './config'
@@ -67,6 +68,7 @@ app.prepare().then(() => {
     if (req.originalUrl.indexOf('/goodbye') == 0) return next()
     if (req.originalUrl.indexOf('/changePhase') == 0) return next()
     if (req.originalUrl.indexOf('/centralized/start') == 0) return next()
+    if (req.originalUrl.indexOf('/savedMessages') == 0) return next()
     if (req.originalUrl.indexOf('/static/images') != -1) {
       // console.log('Getting image')
       res.setHeader(
@@ -174,6 +176,11 @@ app.prepare().then(() => {
   server.get('/stats', (req, res, next) => {
     const stats = DistributedManager.stats
     res.send(stats)
+  })
+
+  // Get messages saved in the creatures
+  server.get('/savedMessages', (req, res, next) => {
+    res.send(MessageManager.getAllMessages())
   })
 
 })

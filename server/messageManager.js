@@ -11,6 +11,9 @@ class MessageManager {
   getMessagesForCreature(creatureId) {    
     return this.messages[creatureId] || []
   }
+  getAllMessages() {
+    return this.messages
+  }
 }
 
 export default new MessageManager()
