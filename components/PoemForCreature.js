@@ -40,7 +40,10 @@ export default class PoemCreature extends React.Component {
         </div>
 
         <div className="poem-content-container">
-          { messages && messages.map((m, index) => <h1 key={`poem-line-${index}`} className="poem-line"> {m.message} </h1>) }
+          { messages && messages.map((m, index) => {
+            if (m.message == "") return (<br key={`poem-line-${index}`}/>)
+            return (<h1 key={`poem-line-${index}`} className="poem-line"> {m.message} </h1>)
+          })}
         </div>
       </div>
     )
