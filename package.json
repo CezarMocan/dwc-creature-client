@@ -16,6 +16,7 @@
     "p:toDistributed": "babel-node scripts/performance/toDistributed.js",
     "p:decentralizedCreaturesToGardens": "babel-node scripts/performance/decentralizedCreaturesToGardens.js",
     "p:decentralizedExitCreatures": "babel-node scripts/performance/decentralizedExitCreatures.js",
+    "p:distributedCreaturesToGardens": "babel-node scripts/performance/distributedCreaturesToGardens.js",
     "p:sendCreatureToGarden": "babel-node scripts/performance/sendCreatureToGarden.js",
     "p:exitAllCreatures": "babel-node scripts/performance/exitAllCreatures.js"
   },
