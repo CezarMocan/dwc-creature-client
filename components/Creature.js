@@ -190,41 +190,14 @@ class CreatureComponent extends React.Component {
     if (newState.isAnimating != this.state.isAnimating) return true
     if (newState.nextGarden != this.state.nextGarden) return true
     if (newProps.programmingInterfaceOpen != this.props.programmingInterfaceOpen) return true
-    if (newProps.programmingInterfaceLastCommand != this.props.programmingInterfaceLastCommand &&
+    if (newProps.programmingInterfaceLastMessage != this.props.programmingInterfaceLastMessage &&
       newProps.programmedCreatureId == this.props.creatureId) return true
-
+    if (newProps.messages != this.props.messages) return true
     return false
   }
 
-  processProgrammingCommand(command) {
-    const { toggleProgrammingInterface, creatureId } = this.props
-    switch (command.type) {
-      case commandTypes.JUMP:
-        console.log('JUMP')
-        this.anim.jumping = true
-        this.anim.jumpStartTime = Date.now()
-        break
-      case commandTypes.TURN_AROUND:
-        console.log('TURN_AROUND')
-        break
-      case commandTypes.STOP:
-        console.log('STOP')
-        this.setState({ isAnimating: false })
-        break
-      case commandTypes.MOVE:
-        console.log('MOVE')
-        this.setState({ isAnimating: true })
-        break
-      case commandTypes.CONTINUE:
-        console.log('CONTINUE')
-        this.setState({ isAnimating: true, tapped: false })
-        toggleProgrammingInterface(creatureId)
-        break
-    }
-  }
-
   componentDidUpdate(oldProps) {
-    const { isActive, programmingInterfaceLastCommand, creatureId } = this.props
+    const { isActive, programmingInterfaceLastMessage, creatureId } = this.props
     if (isActive && !oldProps.isActive) {
       this.resetPosition()
       this.startTicker()
@@ -232,11 +205,6 @@ class CreatureComponent extends React.Component {
     } else if (!isActive && oldProps.isActive) {
       this.stopTicker()
       this.creatureSound.pause()
-    }
-
-    if (programmingInterfaceLastCommand != oldProps.programmingInterfaceLastCommand &&
-        creatureId == this.props.programmedCreatureId) {
-      this.processProgrammingCommand(programmingInterfaceLastCommand)
     }
   }
 
@@ -255,11 +223,12 @@ class CreatureComponent extends React.Component {
   }
 
   render() {
-    const { isActive, creatureId, gardenConfig } = this.props
+    const { isActive, creatureId, gardenConfig, messages } = this.props
     const { tapped, nextGarden, isAnimating } = this.state
     const showCreature = isActive
     const framesFolder = CREATURES[creatureId].folder
     const creatureClassName = CREATURES[creatureId].className
+
     return (
       <div
         ref={(e) => {this.onRef(e)}}
@@ -270,6 +239,19 @@ class CreatureComponent extends React.Component {
         onMouseDown={this.onTouchStart}
         onMouseUp={this.onTouchEnd}
       >
+
+          <div className="creature-message-container">
+            { messages.map((m, index) => {
+              if (messages.length - index > 2) return null
+              return (
+                <div key={`message-${index}`} className="creature-message">
+                  {m.message}
+                </div>  
+              )
+            })}
+          </div>
+
+
           <PNGSequencePlayer
             loopImages={[...Array(NO_LOOPING_FRAMES).keys()].map(k => `/static/images/creatures/${framesFolder}/${k}.png`)}
             isPlaying={isActive && isAnimating}
@@ -277,6 +259,7 @@ class CreatureComponent extends React.Component {
             className={creatureClassName}
             imageClassName="reversed-x"
             inViewport={true}
+            withPreload={true}
           />
       </div>
     )
@@ -286,11 +269,12 @@ class CreatureComponent extends React.Component {
 CreatureComponent.defaultProps = {
   onExit: () => {},
   isActive: false,
-  creatureId: 0
+  creatureId: 0,
+  messages: []
 }
 
 export default withCreatureContext((context, props) => ({
-  programmingInterfaceLastCommand: context.programmingInterfaceLastCommand,
+  programmingInterfaceLastMessage: context.programmingInterfaceLastMessage,
   programmingInterfaceOpen: context.programmingInterfaceOpen,
   programmedCreatureId: context.programmedCreatureId,
   // action

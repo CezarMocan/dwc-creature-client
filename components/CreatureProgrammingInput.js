@@ -15,9 +15,9 @@ class CreatureProgrammingInput extends React.Component {
   onKeyDown = (evt) => {
     if (evt.keyCode != 13) return
     const { value } = this.state
-    const { submitCommand } = this.props
+    const { onMessage, programmedCreatureId } = this.props
     this.setState({ value: '' })
-    submitCommand(value)
+    onMessage(programmedCreatureId, value)
   }
 
   render() {
@@ -47,5 +47,4 @@ class CreatureProgrammingInput extends React.Component {
 export default withCreatureContext((context, props) => ({
   programmingInterfaceOpen: context.programmingInterfaceOpen,
   programmedCreatureId: context.programmedCreatureId,
-  submitCommand: context.action.programmingInterfaceSubmitCommand
 }))(CreatureProgrammingInput)

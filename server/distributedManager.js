@@ -1,14 +1,18 @@
 import network from './network'
 import { getGardenName, getOtherGardenAddress, getPerformancePhase } from "./config"
 import Client from './Client'
+import MessageManager from './messageManager'
+import messageManager from './messageManager';
 
 class Manager {
   constructor() {
     this.clients = {}
     this.creatures = {}
+    this.messages = {}
 
     this.removeClient = this.removeClient.bind(this)
     this.onClientCreatureExit = this.onClientCreatureExit.bind(this)
+    this.onClientCreatureMessage = this.onClientCreatureMessage.bind(this)
   }
 
   get stats() {
@@ -30,6 +34,7 @@ class Manager {
       socket: socket,
       onDisconnect: this.removeClient,
       onCreatureExit: this.onClientCreatureExit,
+      onCreatureMessage: this.onClientCreatureMessage,
       manager: this
     })
 
@@ -85,6 +90,13 @@ class Manager {
 
     // Pass creature to next client
     if (nextClient) nextClient.acquireCreature(creatureId)
+  }
+
+  onClientCreatureMessage(creatureId, clientId, message) {
+    messageManager.addMessageForCreature(creatureId, clientId, message)
+
+    const client = this.clients[clientId]
+    client.emitUpdatedMessages(creatureId)
   }
 
   onClientCreatureExit(creatureId, clientId, nextGarden = getGardenName()) {

@@ -24,9 +24,12 @@ export default class Index extends React.Component {
     this.centralizedPhaseStartAnimation = this.centralizedPhaseStartAnimation.bind(this)
     this.onInitializeSound = this.onInitializeSound.bind(this)
     this.onCentralizedAnimationEnd = this.onCentralizedAnimationEnd.bind(this)
+    this.onCreatureMessage = this.onCreatureMessage.bind(this)
+    this.updateCreatureMessages = this.updateCreatureMessages.bind(this)
 
     this.state = {
       creatures: {},
+      creatureMessages: {},
       gardenConfig: {},
       centralizedPhaseIsPlaying: false,
       centralizedPhasePlayOffset: 0,
@@ -53,10 +56,6 @@ export default class Index extends React.Component {
     }
   }
 
-  onWakeUp() {
-    this.socketSetup()
-  }
-
   componentDidMount() {
     document.addEventListener('visibilitychange', this.onVisibilityChange, false);
     document.body.addEventListener('touchstart', function(e){ e.preventDefault(); });
@@ -76,6 +75,7 @@ export default class Index extends React.Component {
       this.socket.on('centralizedPhaseStartAnimation', this.centralizedPhaseStartAnimation)
       this.socket.on('gardenInfo', this.onReceivedGardenInfo)
       this.socket.on('acquireCreature', this.acquireCreature)
+      this.socket.on('updateCreatureMessages', this.updateCreatureMessages)
       this.heartbeatInterval = setInterval(() => {
         if (!this.socket) return
         // if (document.hasFocus())
@@ -127,15 +127,38 @@ export default class Index extends React.Component {
     })
   }
 
-  acquireCreature({ creatureId }) {
-    const { creatures } = this.state
+  acquireCreature({ creatureId, messages }) {
+    console.log('acquireCreature: ', creatureId, messages)
+    const { creatures, creatureMessages } = this.state
     const newCreatures = {
       ...creatures,
       [creatureId]: true
     }
+    const newCreatureMessages = {
+      ...creatureMessages,
+      [creatureId]: messages
+    }
     this.setState({
-      creatures: newCreatures
+      creatures: newCreatures,
+      creatureMessages: newCreatureMessages
     })
+  }
+
+  updateCreatureMessages({ creatureId, messages }) {
+    console.log('updateCreatureMessages: ', creatureId, messages)
+    const { creatureMessages } = this.state
+    const newCreatureMessages = {
+      ...creatureMessages,
+      [creatureId]: messages
+    }
+    this.setState({
+      creatureMessages: newCreatureMessages
+    })
+  }
+
+  onCreatureMessage(creatureId, message) {
+    console.log('onCreatureMessage: ', creatureId, message)
+    this.socket.emit('creatureMessage', { creatureId, message })
   }
 
   onCreatureExit(creatureId, nextGarden) {
@@ -153,7 +176,7 @@ export default class Index extends React.Component {
   }
 
   render() {
-    const { creatures, gardenConfig, centralizedPhaseIsPlaying, centralizedPhasePlayOffset } = this.state
+    const { creatures, creatureMessages, gardenConfig, centralizedPhaseIsPlaying, centralizedPhasePlayOffset } = this.state
     const { soundInitialized, soundState } = this.state
 
     const gardenName = gardenConfig.localGarden ? gardenConfig.localGarden.name : ''
@@ -212,6 +235,7 @@ export default class Index extends React.Component {
               return <Creature
                 key={creatureId}
                 creatureId={creatureId}
+                messages={creatureMessages[creatureId]}
                 isActive={creatures[creatureId]}
                 onExit={this.onCreatureExit}
                 gardenConfig={gardenConfig}
@@ -219,7 +243,9 @@ export default class Index extends React.Component {
             })
           }
 
-          <CreatureProgrammingInput/>
+          <CreatureProgrammingInput
+            onMessage={this.onCreatureMessage}
+          />
         </div>
 
       </CreatureContextProvider>

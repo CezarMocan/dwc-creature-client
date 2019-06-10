@@ -1,13 +1,15 @@
 import { CREATURE_FORCE_MOVE_MS, CLIENT_HEARTBEAT_INACTIVE_THRESHOLD, getGardenConfig, getOtherGardens, getPerformancePhase } from "./config"
 import { getCentralizedPhaseInfo } from './config'
+import MessageManager from './messageManager'
 
 export default class Client {
-  constructor({ id, socket, onDisconnect, onCreatureExit, manager }) {
+  constructor({ id, socket, onDisconnect, onCreatureExit, onCreatureMessage, manager }) {
     this.id = id
     this.socket = socket
     console.log('Client IP: ', this.socket.handshake.address)
     this.onDisconnect = onDisconnect
     this.onCreatureExit = onCreatureExit
+    this.onCreatureMessage = onCreatureMessage
 
     this.creatureTotalCount = {}
     this.creatureOwnership = {}
@@ -20,6 +22,10 @@ export default class Client {
 
   socketSetup() {
     this.emitGardenInfo()
+
+    this.socket.on('creatureMessage', ({ creatureId, message }) => {
+      this.onCreatureMessage(creatureId, this.id, message)
+    })
 
     this.socket.on('creatureExit', ({ creatureId, nextGarden }) => {
       this.releaseCreature(creatureId, nextGarden)
@@ -54,6 +60,12 @@ export default class Client {
     this.socket.emit('centralizedPhaseStartAnimation')
   }
 
+  emitUpdatedMessages(creatureId) {    
+    const messages = MessageManager.getMessagesForCreature(creatureId)
+    this.socket.emit('updateCreatureMessages', { creatureId, messages })
+    console.log('emitUpdatedMessages: ', creatureId)
+  }
+
   get isActive() {
     return (Date.now() - this.heartbeatTimestamp) < CLIENT_HEARTBEAT_INACTIVE_THRESHOLD
   }
@@ -81,7 +93,9 @@ export default class Client {
     console.log('acquireCreature: ', creatureId, this.id)
     this.increaseCreatureTotalCount(creatureId)
     this.creatureOwnership[creatureId] = true
-    this.socket.emit('acquireCreature', { creatureId })
+
+    const messages = MessageManager.getMessagesForCreature(creatureId)
+    this.socket.emit('acquireCreature', { creatureId, messages })
 
     // Force release the creature if the client is inactive for a while
     const currCreatureCount = this.getCreatureTotalCount(creatureId)

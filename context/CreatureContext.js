@@ -6,7 +6,7 @@ const CreatureContext = React.createContext()
 export default class CreatureContextProvider extends React.Component {
   state = {
     programmingInterfaceOpen: false,
-    programmingInterfaceLastCommand: '',
+    programmingInterfaceLastMessage: '',
     programmedCreatureId: null,
 
     action: this
@@ -24,17 +24,9 @@ export default class CreatureContextProvider extends React.Component {
     }
   }
 
-  programmingInterfaceSubmitCommand = (command) => {
-    if (!this.state.programmingInterfaceOpen) return
-    const processedCommand = parseRawCommand(command)
-    this.setState({ programmingInterfaceLastCommand: processedCommand })
-  }
-
   render() {
     const context = { ...this.state }
     const { children } = this.props
-
-    console.log('Context re-render: ', context)
 
     return (
       <CreatureContext.Provider value={context}>
