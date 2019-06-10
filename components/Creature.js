@@ -192,12 +192,13 @@ class CreatureComponent extends React.Component {
     if (newProps.programmingInterfaceOpen != this.props.programmingInterfaceOpen) return true
     if (newProps.programmingInterfaceLastMessage != this.props.programmingInterfaceLastMessage &&
       newProps.programmedCreatureId == this.props.creatureId) return true
+    if (newProps.programmedCreatureId != this.props.programmedCreatureId) return true
     if (newProps.messages != this.props.messages) return true
     return false
   }
 
   componentDidUpdate(oldProps) {
-    const { isActive, programmingInterfaceLastMessage, creatureId } = this.props
+    const { isActive, programmedCreatureId, creatureId } = this.props
     if (isActive && !oldProps.isActive) {
       this.resetPosition()
       this.startTicker()
@@ -206,6 +207,11 @@ class CreatureComponent extends React.Component {
       this.stopTicker()
       this.creatureSound.pause()
     }
+    if (programmedCreatureId != oldProps.programmedCreatureId &&
+        programmedCreatureId != creatureId) {
+      this.setState({ tapped: false })
+    }
+
   }
 
   componentWillUnmount() {
@@ -239,7 +245,7 @@ class CreatureComponent extends React.Component {
         onMouseDown={this.onTouchStart}
         onMouseUp={this.onTouchEnd}
       >
-
+        { messages.length > 0 &&
           <div className="creature-message-container">
             { messages.map((m, index) => {
               if (messages.length - index > 2) return null
@@ -250,17 +256,17 @@ class CreatureComponent extends React.Component {
               )
             })}
           </div>
+        }
 
-
-          <PNGSequencePlayer
-            loopImages={[...Array(NO_LOOPING_FRAMES).keys()].map(k => `/static/images/creatures/${framesFolder}/${k}.png`)}
-            isPlaying={isActive && isAnimating}
-            loop={true}
-            className={creatureClassName}
-            imageClassName="reversed-x"
-            inViewport={true}
-            withPreload={true}
-          />
+        <PNGSequencePlayer
+          loopImages={[...Array(NO_LOOPING_FRAMES).keys()].map(k => `/static/images/creatures/${framesFolder}/${k}.png`)}
+          isPlaying={isActive && isAnimating}
+          loop={true}
+          className={creatureClassName}
+          imageClassName="reversed-x"
+          inViewport={true}
+          withPreload={true}
+        />
       </div>
     )
   }
