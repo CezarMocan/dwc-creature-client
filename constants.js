@@ -16,6 +16,8 @@ export const GARDENS = {
     }
 }
 
+export const MESSAGES_SAVE_PATH = './dwc-all-messages'
+
 export const CREATURES = {
   creature1: {
     folder: 1,
