@@ -251,6 +251,7 @@ class CreatureComponent extends React.Component {
                   </div>  
                 )
               })}
+              <div className="creature-message-line"></div>
             </div>
           }        
           <PNGSequencePlayer
