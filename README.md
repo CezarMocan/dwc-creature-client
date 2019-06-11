@@ -35,9 +35,9 @@ yarn install
 Start servers:
 
 ```sh
-sudo pm2 start npm -- run start:server alpha #Starts server named alpha.
-sudo pm2 start npm -- run start:server beta #Starts server named beta.
-sudo pm2 start npm -- run start:server gamma #Starts server named gamma.
+sudo pm2 start --name alpha npm -- run start:server alpha #Starts server named alpha.
+sudo pm2 start --name beta npm -- run start:server beta #Starts server named beta.
+sudo pm2 start --name gamma npm -- run start:server gamma #Starts server named gamma.
 ```
 
 ## PM2 instructions
