@@ -1,6 +1,6 @@
 import fs from 'fs'
 import { getGardenName } from './config'
-import { MESSAGES_SAVE_PATH } from '../constants'
+import { MESSAGES_SAVE_PATH, WITH_DISK_BACKUP } from '../constants'
 
 class MessageManager {
   constructor() {
@@ -21,6 +21,7 @@ class MessageManager {
   }
 
   _backupToDisk(data) {
+    if (!WITH_DISK_BACKUP) return
     const fileName = `${getGardenName()}-${Date.now()}.json`
     fs.writeFile(`${MESSAGES_SAVE_PATH}/${fileName}`, data, 'utf8', () => {
       console.log('Write file done: ', `${MESSAGES_SAVE_PATH}/${fileName}`)

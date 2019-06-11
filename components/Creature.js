@@ -240,28 +240,28 @@ class CreatureComponent extends React.Component {
         onMouseDown={this.onTouchStart}
         onMouseUp={this.onTouchEnd}
       >
-        { messages.length > 0 &&
-          <div className="creature-message-container">
-            { messages.map((m, index) => {
-              if (messages.length - index > 2) return null
-              return (
-                <div key={`message-${index}`} className="creature-message">
-                  {m.message}
-                </div>  
-              )
-            })}
-          </div>
-        }
-
-        <PNGSequencePlayer
-          loopImages={[...Array(NO_LOOPING_FRAMES).keys()].map(k => `/static/images/creatures/${framesFolder}/${k}.png`)}
-          isPlaying={isActive && isAnimating}
-          loop={true}
-          className={creatureClassName}
-          imageClassName="reversed-x"
-          inViewport={true}
-          withPreload={true}
-        />
+        <div className={creatureClassName}>
+          { messages.length > 0 &&
+            <div className="creature-message-container">
+              { messages.map((m, index) => {
+                if (messages.length - index > 2) return null
+                return (
+                  <div key={`message-${index}`} className="creature-message">
+                    {m.message}
+                  </div>  
+                )
+              })}
+            </div>
+          }        
+          <PNGSequencePlayer
+            loopImages={[...Array(NO_LOOPING_FRAMES).keys()].map(k => `/static/images/creatures/${framesFolder}/${k}.png`)}
+            isPlaying={isActive && isAnimating}
+            loop={true}
+            imageClassName="reversed-x"
+            inViewport={true}
+            withPreload={true}
+          />
+        </div>
       </div>
     )
   }

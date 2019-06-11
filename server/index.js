@@ -18,8 +18,10 @@ if (Object.keys(GARDENS).indexOf(process.argv[2].toLowerCase()) == -1) {
 }
 
 setGarden(process.argv[2])
-setPerformancePhase(PERFORMANCE_PHASES.CENTRALIZED)
-// DistributedManager.helloCreature("creature1")
+// setPerformancePhase(PERFORMANCE_PHASES.CENTRALIZED)
+setPerformancePhase(PERFORMANCE_PHASES.DISTRIBUTED)
+DistributedManager.helloCreature("creature1")
+DistributedManager.helloCreature("creature2")
 
 const GARDEN_CONFIG = getGardenConfig()
 const OTHER_GARDENS = getOtherGardens()
