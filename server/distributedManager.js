@@ -139,7 +139,7 @@ class Manager {
     try {
       attempt = await network.sendCreatureToGarden(newGarden, creatureId)
     } catch (e) {
-      console.log('Promise rejected!')
+      console.log('Creature', creatureId, ' staying in current garden—others are down.')
       this.helloCreature(creatureId)
     }
   }
