@@ -16,8 +16,10 @@ export const GARDENS = {
     }
 }
 
+console.log('Environment: ', process.env.NODE_ENV)
+
 export const MESSAGES_SAVE_PATH = './dwc-all-messages'
-export const WITH_DISK_BACKUP = false
+export const WITH_DISK_BACKUP = (process.env.NODE_ENV == 'production')
 
 export const CREATURES = {
   creature1: {

@@ -226,9 +226,15 @@ class CreatureComponent extends React.Component {
 
   render() {
     const { isActive, isAnimating, creatureId, messages } = this.props
+    const { tapped } = this.state
     const showCreature = isActive
     const framesFolder = CREATURES[creatureId].folder
     const creatureClassName = CREATURES[creatureId].className
+
+    const bubbleClassNames = classnames({
+      'creature-message-container': true,
+      'hidden': !tapped
+    })
 
     return (
       <div
@@ -242,7 +248,7 @@ class CreatureComponent extends React.Component {
       >
         <div className={creatureClassName}>
           { messages.length > 0 &&
-            <div className="creature-message-container">
+            <div className={bubbleClassNames}>
               { messages.map((m, index) => {
                 if (messages.length - index > 2) return null
                 return (
