@@ -17,7 +17,14 @@ class CreatureProgrammingInput extends React.Component {
     const { value } = this.state
     const { onMessage, programmedCreatureId } = this.props
     this.setState({ value: '' })
+    this.inputElement.blur()
     onMessage(programmedCreatureId, value)
+  }
+
+  componentDidUpdate(oldProps) {
+    if (this.props.programmingInterfaceOpen && !oldProps.programmingInterfaceOpen) {
+      // if (this.inputElement) this.inputElement.focus()
+    }
   }
 
   render() {
@@ -30,6 +37,7 @@ class CreatureProgrammingInput extends React.Component {
       <div className="creature-code-input-container">
         <input
           id="programmable-input"
+          ref={(e) => this.inputElement = e}
           className="creature-code-input"
           type="text"
           value={value}
