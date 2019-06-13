@@ -66,3 +66,10 @@ npm run p:decentralizedCreaturesToGardens
 npm run p:toDistributed
 
 npm run p:distributedCreaturesToGardens
+
+
+## Storage for messages passed by the creatures
+
+We are currently keeping a log of all messages as text files, inside the `dwc-all-messages` folder. The filename format is `[server_name]-[timestamp].json`. (e.g. `alpha-1560202479535.json`). This is a really rudimentary way of storage which avoids having to set up a database on the Raspberry Pi. Each one of these JSON files stores the entire history of messages in the current session (since the server was started,) so the one with the latest timestamp will be the full archive. We're storing all of them for backup reasons, even though in the future we'll update to only storing 1 or 2 files. 
+
+**One important thing to keep in mind around messages is that if the server is turned off, the message history is cleared out. They get saved in the JSON files, but whenever the server is turned on again, we don't load old messages.**
