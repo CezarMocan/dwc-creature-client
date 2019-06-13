@@ -250,13 +250,31 @@ h1.garden-heading {
     }
 
     .creature-message-line {
-      width: 50px;
-      height: 50px;
-      border-radius: 50px;
-      border-right: 7px dotted rgba(47, 66, 85, 1);
+      border: 1px solid rgba(47, 66, 85, 1);
+      background-color: white;
       position: absolute;
       bottom: 0;
-      transform: translateY(50%) rotate(45deg) translateX(50%);
+
+      &.first {
+        transform: translateY(150%) rotate(45deg) translateX(585%);
+        width: 10px;
+        height: 10px;
+        border-radius: 20px;  
+      }
+
+      &.second {
+        transform: translateY(-50%) rotate(45deg) translateX(500%);
+        width: 15px;
+        height: 15px;
+        border-radius: 20px;  
+      }
+
+      &.third {
+        transform: translateY(-60%) rotate(45deg) translateX(250%);
+        width: 20px;
+        height: 20px;
+        border-radius: 20px;  
+      }
     }
 }
 

@@ -241,8 +241,8 @@ class CreatureComponent extends React.Component {
         ref={(e) => {this.onRef(e)}}
         className={`creature ${showCreature ? '' : 'hidden'}`}
         style={{transform: `translateX(${this.anim.x}px) translateY(${this.anim.y}px) rotate(${this.anim.rotation}deg)`}}
-        onTouchStart={this.onTouchStart}
-        onTouchEnd={this.onTouchEnd}
+        // onTouchStart={this.onTouchStart}
+        // onTouchEnd={this.onTouchEnd}
         onMouseDown={this.onTouchStart}
         onMouseUp={this.onTouchEnd}
       >
@@ -257,7 +257,9 @@ class CreatureComponent extends React.Component {
                   </div>  
                 )
               })}
-              <div className="creature-message-line"></div>
+              <div className="creature-message-line first"></div>
+              <div className="creature-message-line second"></div>
+              <div className="creature-message-line third"></div>
             </div>
           }        
           <PNGSequencePlayer
