@@ -24,8 +24,6 @@ class CreatureProgrammingInput extends React.Component {
     const { programmingInterfaceOpen } = this.props
     const { value } = this.state
 
-    console.log('CreatureProgrammingInput re-render: ', programmingInterfaceOpen)
-
     if (!programmingInterfaceOpen) return null
 
     return (
