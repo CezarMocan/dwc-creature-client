@@ -1,7 +1,7 @@
 export const GARDENS = {
     "alpha": {
       "address": "http://localhost",
-      "port": 3001,
+      "port": 80,
       name: "alpha"
     },
     "beta": {
