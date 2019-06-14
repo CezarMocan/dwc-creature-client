@@ -17,7 +17,8 @@ class CreatureProgrammingInput extends React.Component {
     const { value } = this.state
     const { onMessage, programmedCreatureId } = this.props
     this.setState({ value: '' })
-    this.inputElement.blur()
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+    if (isMobile) this.inputElement.blur()
     onMessage(programmedCreatureId, value)
   }
 
