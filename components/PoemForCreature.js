@@ -2,6 +2,7 @@ import React from 'react'
 import { CREATURES } from '../constants'
 import PNGSequencePlayer from '../components/PNGSequencePlayer'
 import { getPromise } from '../utils/xhr'
+import Head from './Head'
 
 const NO_LOOPING_FRAMES = 6
 
@@ -14,11 +15,8 @@ export default class PoemCreature extends React.Component {
   }
   async componentDidMount() {
     const { creatureId } = this.props
-    // const creatureId = 'creature1'
 
     const allMessages = await getPromise('/savedMessages')
-    console.log('allMessages: ', allMessages)
-    console.log('curr: ', allMessages[creatureId])
     this.setState({ messages: allMessages[creatureId] })
   }
   render() {
@@ -28,6 +26,7 @@ export default class PoemCreature extends React.Component {
 
     return (
       <div className="poem-container">
+        <Head/>
         <div className="poem-creature-container">
           <PNGSequencePlayer
             loopImages={[...Array(NO_LOOPING_FRAMES).keys()].map(k => `/static/images/creatures/${framesFolder}/${k}.png`)}
