@@ -45,6 +45,7 @@ class CreatureProgrammingInput extends React.Component {
           placeholder="Type here..."
           onChange={this.onChange}
           onKeyDown={this.onKeyDown}
+          autoComplete="false"
         />
       </div>
     )
