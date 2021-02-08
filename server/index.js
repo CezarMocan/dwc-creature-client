@@ -17,10 +17,16 @@ if (Object.keys(GARDENS).indexOf(process.argv[2].toLowerCase()) == -1) {
 }
 
 setGarden(process.argv[2])
-setPerformancePhase(PERFORMANCE_PHASES.CENTRALIZED)
+setPerformancePhase(PERFORMANCE_PHASES.DISTRIBUTED)
 
 const GARDEN_CONFIG = getGardenConfig()
 const OTHER_GARDENS = getOtherGardens()
+
+if(GARDEN_CONFIG.name == GARDENS.main.name){
+	DistributedManager.helloCreature(Object.keys(CREATURES)[0]);
+	DistributedManager.helloCreature(Object.keys(CREATURES)[1]);
+	DistributedManager.helloCreature(Object.keys(CREATURES)[2]);
+
 
 console.log('Starting garden: ', GARDEN_CONFIG.name)
 console.dir(GARDEN_CONFIG)
