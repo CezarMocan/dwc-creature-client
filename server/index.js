@@ -26,7 +26,7 @@ if(GARDEN_CONFIG.name == GARDENS.main.name){
 	DistributedManager.helloCreature(Object.keys(CREATURES)[0]);
 	DistributedManager.helloCreature(Object.keys(CREATURES)[1]);
 	DistributedManager.helloCreature(Object.keys(CREATURES)[2]);
-
+}
 
 console.log('Starting garden: ', GARDEN_CONFIG.name)
 console.dir(GARDEN_CONFIG)
