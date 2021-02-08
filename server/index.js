@@ -17,10 +17,26 @@ if (Object.keys(GARDENS).indexOf(process.argv[2].toLowerCase()) == -1) {
 }
 
 setGarden(process.argv[2])
-setPerformancePhase(PERFORMANCE_PHASES.CENTRALIZED)
+// setPerformancePhase(PERFORMANCE_PHASES.CENTRALIZED)
+// *********
+// *********
+// *********
+// *********
+// Changes for starting in distributed here:
+setPerformancePhase(PERFORMANCE_PHASES.DISTRIBUTED)
 
 const GARDEN_CONFIG = getGardenConfig()
 const OTHER_GARDENS = getOtherGardens()
+
+// Sending 3 creatures to the gardens
+// Very important, we only run this in one garden (alpha), so we don't end up with 
+// duplicate creatures spawned from multiple gardens.
+if (GARDEN_CONFIG.name == GARDENS.alpha.name) {
+  // The creature names are the object keys inside of the CREATURES object.
+  DistributedManager.helloCreature(Object.keys(CREATURES)[0]) // id: creature1
+  DistributedManager.helloCreature(Object.keys(CREATURES)[1]) // id: creature2
+  DistributedManager.helloCreature(Object.keys(CREATURES)[2]) // id: creature3
+}
 
 console.log('Starting garden: ', GARDEN_CONFIG.name)
 console.dir(GARDEN_CONFIG)
