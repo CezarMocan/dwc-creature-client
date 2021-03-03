@@ -81,7 +81,7 @@ export default class Client {
 
   acquireCreature(creatureId) {
     console.log('acquireCreature: ', creatureId, this.id)
-	ooled.print('acquireCreature: ' + creatureId + ' ' + this.id);
+//	ooled.print('acquireCreature: ' + creatureId + ' ' + this.id);
     this.increaseCreatureTotalCount(creatureId)
     this.creatureOwnership[creatureId] = true
     this.socket.emit('acquireCreature', { creatureId })
