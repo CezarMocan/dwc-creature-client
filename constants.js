@@ -1,24 +1,19 @@
 export const GARDENS = {
     "alpha": {
       "address": "http://192.168.0.101",
-      "port": 3001,
+      "port": 80,
       name: "alpha"
     },
     "beta": {
       "address": "http://192.168.0.102",
-      "port": 3001,
+      "port": 80,
       name: "beta"
     },
     "gamma": {
       "address": "http://192.168.0.103",
-      "port": 3001,
+      "port": 80,
       name: "gamma"
-    },
-	"main": {
-      "address" : "http://192.168.0.100",
-	  "port" : 3001,
-	  name: "main"
-	}
+    }
 }
 
 export const CREATURES = {
