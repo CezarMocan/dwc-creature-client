@@ -25,11 +25,23 @@ setPerformancePhase(PERFORMANCE_PHASES.DECENTRALIZED)
 const GARDEN_CONFIG = getGardenConfig()
 const OTHER_GARDENS = getOtherGardens()
 
-if(GARDEN_CONFIG.name == GARDENS.beta.name){
+if(GARDEN_CONFIG.name == GARDENS.alpha.name){
+	DistributedManager.helloCreature(Object.keys(CREATURES)[0]);
+	DistributedManager.helloCreature(Object.keys(CREATURES)[1]);
+	DistributedManager.helloCreature(Object.keys(CREATURES)[2]);
+}
+else if(GARDEN_CONFIG.name == GARDENS.beta.name){
+	DistributedManager.helloCreature(Object.keys(CREATURES)[3]);
 	DistributedManager.helloCreature(Object.keys(CREATURES)[4]);
 	DistributedManager.helloCreature(Object.keys(CREATURES)[5]);
-	DistributedManager.helloCreature(Object.keys(CREATURES)[6]);
 }
+else if(GARDEN_CONFIG.name == GARDENS.gamma.name){
+	DistributedManager.helloCreature(Object.keys(CREATURES)[6]);
+	DistributedManager.helloCreature(Object.keys(CREATURES)[7]);
+	DistributedManager.helloCreature(Object.keys(CREATURES)[8]);
+}
+
+
 
 console.log('Starting garden: ', GARDEN_CONFIG.name)
 ooled.print('Starting garden: ' + GARDEN_CONFIG.name);
