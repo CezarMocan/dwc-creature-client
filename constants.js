@@ -1,17 +1,17 @@
 export const GARDENS = {
     "alpha": {
-      "address": "http://localhost",
-      "port": 3001,
+      "address": "http://192.168.0.101",
+      "port": 80,
       name: "alpha"
     },
     "beta": {
-      "address": "http://localhost",
-      "port": 3002,
+      "address": "http://192.168.0.102",
+      "port": 80,
       name: "beta"
     },
     "gamma": {
-      "address": "http://localhost",
-      "port": 3003,
+      "address": "http://192.168.0.103",
+      "port": 80,
       name: "gamma"
     }
 }

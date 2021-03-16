@@ -1,0 +1,2 @@
+#!/bin/bash
+cd ~/gits/dwc-creature-client && sudo pm2 delete beta && sudo pm2 start --name beta npm -- run start:server beta && sudo pm2 save
