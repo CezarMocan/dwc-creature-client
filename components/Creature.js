@@ -212,6 +212,7 @@ export default class CreatureComponent extends React.Component {
             className={creatureClassName}
             imageClassName="reversed-x"
             inViewport={true}
+            withPreload={true}
           />
       </div>
     )

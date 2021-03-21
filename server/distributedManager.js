@@ -39,7 +39,13 @@ class Manager {
     // If this is the first client in current session, send all active creatures over to them.
     if (this.noClients == 1) {
       Object.keys(this.creatures).forEach((creatureId) => {
-        this.moveCreatureToNewClient(creatureId)
+        setTimeout(() => {
+          let canMove = true
+          Object.values(this.clients).forEach(c => {
+            if (c.creatureOwnership[creatureId]) canMove = false
+          })
+          if (canMove) this.moveCreatureToNewClient(creatureId)
+        }, Math.random() * 7000)
       })
     }
 
@@ -63,13 +69,23 @@ class Manager {
 
   moveCreatureToNewClient(creatureId, prevId) {
     // If the creature has already left the garden, do nothing
+    console.log('move creature to new client: ', creatureId, prevId)
     if (!this.isCreaturePresent(creatureId)) return
+    console.log('---is creature present: true ')
+
+    let canMove = true
+    Object.values(this.clients).forEach(c => {
+      if (c.creatureOwnership[creatureId]) canMove = false
+    })
+    if (!canMove) return
+    console.log('---no duplicates')
 
     // Get all clients
     const clientsAll = Object.values(this.clients)
 
     // If no clients are connected, do nothing
     if (!clientsAll.length) return
+    console.log('---enough clients')
 
     // Filter down to clients who are active (sent a heartbeat recently)
     const clientsActive = clientsAll.filter((client) => client.isActive)
@@ -82,12 +98,15 @@ class Manager {
 
     // Get all clients who've been visited least by the creature
     const candidates = clients.filter((client) => (client.allCreaturesTotalCount == minOwned))
+    console.log('---candidates: ', candidates.length)
 
     // Select the next client at random
     const nextClient = candidates[parseInt(Math.floor(Math.random() * candidates.length))]
+    console.log('next client: ', !!nextClient)
 
     // Pass creature to next client
     if (nextClient) nextClient.acquireCreature(creatureId)
+    else setTimeout(() => { this.moveCreatureToNewClient(creatureId, prevId) }, 1000)
   }
 
   onClientCreatureExit(creatureId, clientId, nextGarden = getGardenName()) {
