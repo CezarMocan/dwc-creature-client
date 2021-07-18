@@ -1,4 +1,4 @@
-var ooled = require('../utils/oled');
+//var ooled = require('../utils/oled');
 
 export const logError = (msg, req, res) => {
     console.warn(msg)
