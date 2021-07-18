@@ -1,13 +1,13 @@
 import { CREATURE_FORCE_MOVE_MS, CLIENT_HEARTBEAT_INACTIVE_THRESHOLD, getGardenConfig, getOtherGardens, getPerformancePhase } from "./config"
 import { getCentralizedPhaseInfo } from './config'
-var ooled = require('../utils/oled');
+// var ooled = require('../utils/oled');
 
 export default class Client {
   constructor({ id, socket, onDisconnect, onCreatureExit, manager }) {
     this.id = id
     this.socket = socket
     console.log('Client IP: ', this.socket.handshake.address)
-	ooled.print('Client IP: ' ,  + this.socket.handshake.address);
+//	ooled.print('Client IP: ' ,  + this.socket.handshake.address);
     this.onDisconnect = onDisconnect
     this.onCreatureExit = onCreatureExit
 
@@ -81,7 +81,7 @@ export default class Client {
 
   acquireCreature(creatureId) {
     console.log('acquireCreature: ', creatureId, this.id)
-	ooled.print('acquireCreature: ' + creatureId + ' ' + this.id);
+//	ooled.print('acquireCreature: ' + creatureId + ' ' + this.id);
     this.increaseCreatureTotalCount(creatureId)
     this.creatureOwnership[creatureId] = true
     this.socket.emit('acquireCreature', { creatureId })
@@ -95,7 +95,7 @@ export default class Client {
           !this.isActive)
       {
         console.log('Client ', this.id, ' force releasing creature ', creatureId)
-		ooled.print('Client ' + this.id + ' force releasing creature ' + creatureId);
+//		ooled.print('Client ' + this.id + ' force releasing creature ' + creatureId);
         this.releaseCreature(creatureId)
       }
 

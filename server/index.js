@@ -10,7 +10,7 @@ import { isPerformancePhaseCentralized, isPerformancePhaseDecentralized, isPerfo
 import { centralizedPhaseStartPlay } from './config'
 import { logError, logSuccess } from './log'
 
-var ooled = require('../utils/oled');
+// var ooled = require('../utils/oled');
 
 if (Object.keys(GARDENS).indexOf(process.argv[2].toLowerCase()) == -1) {
   console.error('Could not start server. Garden must be one of: ')
@@ -44,10 +44,10 @@ else if(GARDEN_CONFIG.name == GARDENS.gamma.name){
 
 
 console.log('Starting garden: ', GARDEN_CONFIG.name)
-ooled.print('Starting garden: ' + GARDEN_CONFIG.name);
+// ooled.print('Starting garden: ' + GARDEN_CONFIG.name);
 console.dir(GARDEN_CONFIG)
 console.log('The other gardens are: ')
-ooled.print('The other gardens are: ' + OTHER_GARDENS);
+// ooled.print('The other gardens are: ' + OTHER_GARDENS);
 console.dir(OTHER_GARDENS)
 
 const dev = process.env.NODE_ENV !== 'production'
@@ -84,7 +84,7 @@ app.prepare().then(() => {
 
   server.get('*', (req, res, next) => {
     console.log('Request: ', req.originalUrl)
-	ooled.print('Request: ' + req.originalUrl);
+//	ooled.print('Request: ' + req.originalUrl);
     if (req.originalUrl.indexOf('/stats') == 0) return next()
     if (req.originalUrl.indexOf('/hello') == 0) return next()
     if (req.originalUrl.indexOf('/goodbye') == 0) return next()
@@ -102,7 +102,7 @@ app.prepare().then(() => {
 
   http.listen(port, function(){
     console.log('listening on *:', port)
-	ooled.print('listening on *: ' + port);
+//	ooled.print('listening on *: ' + port);
   })
 
   // A client connected to the garden

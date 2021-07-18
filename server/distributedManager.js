@@ -1,7 +1,7 @@
 import network from './network'
 import { getGardenName, getOtherGardenAddress, getPerformancePhase } from "./config"
 import Client from './Client'
-var ooled = require('../utils/oled');
+// var ooled = require('../utils/oled');
 
 class Manager {
   constructor() {
@@ -50,7 +50,7 @@ class Manager {
     }
 
     console.log('Connected: ', socket.id, this.noClients)
-	ooled.print('Connected: ' + socket.id + ' ' + this.noClients);
+//	ooled.print('Connected: ' + socket.id + ' ' + this.noClients);
   }
 
   broadcastGardenInfo() {
@@ -64,7 +64,7 @@ class Manager {
   removeClient(id) {
     delete this.clients[id]
     console.log('disconnected: ', id, this.noClients)
-	ooled.print('disconnected: ' + id + ' ' + this.noClients);
+//	ooled.print('disconnected: ' + id + ' ' + this.noClients);
   }
 
   moveCreatureToNewClient(creatureId, prevId) {
@@ -111,14 +111,14 @@ class Manager {
 
   onClientCreatureExit(creatureId, clientId, nextGarden = getGardenName()) {
     console.log('Creature exited: ', creatureId, clientId)
-	ooled.print('Creature exited : ' + creatureId + ' ' + clientId);
+//	ooled.print('Creature exited : ' + creatureId + ' ' + clientId);
     if (nextGarden == getGardenName()) {
       console.log('Creature staying in the same garden')
-	  ooled.print('Creature staying in the same garden');
+//	  ooled.print('Creature staying in the same garden');
       this.moveCreatureToNewClient(creatureId, clientId)
     } else {
       console.log('Creature moving to garden: ', nextGarden)
-	  ooled.print('Creature moving to garden: ' + nextGarden)
+//	  ooled.print('Creature moving to garden: ' + nextGarden)
       this.moveCreatureToNewGarden(creatureId, nextGarden)
     }
   }
