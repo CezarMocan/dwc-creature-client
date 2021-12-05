@@ -18,6 +18,7 @@ if (Object.keys(GARDENS).indexOf(process.argv[2].toLowerCase()) == -1) {
 
 setGarden(process.argv[2])
 // setPerformancePhase(PERFORMANCE_PHASES.CENTRALIZED)
+
 // *********
 // *********
 // *********
@@ -37,6 +38,11 @@ if (GARDEN_CONFIG.name == GARDENS.alpha.name) {
   DistributedManager.helloCreature(Object.keys(CREATURES)[1]) // id: creature2
   DistributedManager.helloCreature(Object.keys(CREATURES)[2]) // id: creature3
 }
+// *********
+// *********
+// *********
+// *********
+
 
 console.log('Starting garden: ', GARDEN_CONFIG.name)
 console.dir(GARDEN_CONFIG)
