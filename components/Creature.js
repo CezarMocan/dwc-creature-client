@@ -118,8 +118,10 @@ export default class CreatureComponent extends React.Component {
     this.anim.y += Math.sin(time / 10) * 2
 
     this.anim.rotation += Math.abs(Math.sin(time) * Math.cos(time)) * this.anim.rotationSgn
-    if (Math.abs(this.anim.rotation) > 10) {
-      this.anim.rotationSgn *= -1
+    if (this.anim.rotation > 10) {
+      this.anim.rotationSgn = -1
+    } else if (this.anim.rotation < -10) {
+      this.anim.rotationSgn = 1
     }
 
     this._e.style.transform = `translateX(${this.anim.x}px) translateY(${this.anim.y + creatureYOffset}px) rotate(${this.anim.rotation}deg)`
