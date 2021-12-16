@@ -10,6 +10,8 @@ import { isPerformancePhaseCentralized, isPerformancePhaseDecentralized, isPerfo
 import { centralizedPhaseStartPlay } from './config'
 import { logError, logSuccess } from './log'
 
+// var ooled = require('../utils/oled');
+
 if (Object.keys(GARDENS).indexOf(process.argv[2].toLowerCase()) == -1) {
   console.error('Could not start server. Garden must be one of: ')
   console.dir(Object.keys(GARDENS))
@@ -24,29 +26,34 @@ setGarden(process.argv[2])
 // *********
 // *********
 // Changes for starting in distributed here:
-setPerformancePhase(PERFORMANCE_PHASES.DISTRIBUTED)
+setPerformancePhase(PERFORMANCE_PHASES.DECENTRALIZED)
 
 const GARDEN_CONFIG = getGardenConfig()
 const OTHER_GARDENS = getOtherGardens()
 
-// Sending 3 creatures to the gardens
-// Very important, we only run this in one garden (alpha), so we don't end up with 
-// duplicate creatures spawned from multiple gardens.
-if (GARDEN_CONFIG.name == GARDENS.alpha.name) {
-  // The creature names are the object keys inside of the CREATURES object.
-  DistributedManager.helloCreature(Object.keys(CREATURES)[0]) // id: creature1
-  DistributedManager.helloCreature(Object.keys(CREATURES)[1]) // id: creature2
-  DistributedManager.helloCreature(Object.keys(CREATURES)[2]) // id: creature3
+if(GARDEN_CONFIG.name == GARDENS.alpha.name){
+	DistributedManager.helloCreature(Object.keys(CREATURES)[0]);
+	DistributedManager.helloCreature(Object.keys(CREATURES)[1]);
+	DistributedManager.helloCreature(Object.keys(CREATURES)[2]);
 }
-// *********
-// *********
-// *********
-// *********
+else if(GARDEN_CONFIG.name == GARDENS.beta.name){
+	DistributedManager.helloCreature(Object.keys(CREATURES)[3]);
+	DistributedManager.helloCreature(Object.keys(CREATURES)[4]);
+	DistributedManager.helloCreature(Object.keys(CREATURES)[5]);
+}
+else if(GARDEN_CONFIG.name == GARDENS.gamma.name){
+	DistributedManager.helloCreature(Object.keys(CREATURES)[6]);
+	DistributedManager.helloCreature(Object.keys(CREATURES)[7]);
+	DistributedManager.helloCreature(Object.keys(CREATURES)[8]);
+}
+
 
 
 console.log('Starting garden: ', GARDEN_CONFIG.name)
+// ooled.print('Starting garden: ' + GARDEN_CONFIG.name);
 console.dir(GARDEN_CONFIG)
 console.log('The other gardens are: ')
+// ooled.print('The other gardens are: ' + OTHER_GARDENS);
 console.dir(OTHER_GARDENS)
 
 const dev = process.env.NODE_ENV !== 'production'
@@ -83,6 +90,7 @@ app.prepare().then(() => {
 
   server.get('*', (req, res, next) => {
     console.log('Request: ', req.originalUrl)
+//	ooled.print('Request: ' + req.originalUrl);
     if (req.originalUrl.indexOf('/stats') == 0) return next()
     if (req.originalUrl.indexOf('/hello') == 0) return next()
     if (req.originalUrl.indexOf('/goodbye') == 0) return next()
@@ -100,6 +108,7 @@ app.prepare().then(() => {
 
   http.listen(port, function(){
     console.log('listening on *:', port)
+//	ooled.print('listening on *: ' + port);
   })
 
   // A client connected to the garden

@@ -36,8 +36,8 @@ export default class DecentralizedAnimation extends React.Component {
     super(props)
     this.state = {
       touching: false,
-      touchX: 0,
-      touchY: 0,
+      touchX: -200,
+      touchY: -200,
       plantGrowing: getNoGrowthState(),
       plants: [],
       plantsInfo: {}
