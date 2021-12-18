@@ -1,12 +1,14 @@
 import network from './network'
-import { getGardenName, getOtherGardenAddress, getPerformancePhase } from "./config"
+import { getGardenName, getOtherGardenAddress, getPerformancePhase, CREATURES } from "./config"
 import Client from './Client'
+
 // var ooled = require('../utils/oled');
 
 class Manager {
   constructor() {
     this.clients = {}
     this.creatures = {}
+    this.creaturesPerClient = {}
 
     this.removeClient = this.removeClient.bind(this)
     this.onClientCreatureExit = this.onClientCreatureExit.bind(this)
@@ -47,6 +49,14 @@ class Manager {
           if (canMove) this.moveCreatureToNewClient(creatureId)
         }, Math.random() * 7000)
       })
+    } else {
+      // Add new creature for each incoming client
+      setTimeout(() => {
+        const creatureIndex = Math.floor((Math.random() * 19) + 3) - 1
+        const creatureId = Object.keys(CREATURES)[creatureIndex]
+        this.creaturesPerClient[socket.id] = creatureId
+        this.helloCreature(creatureId)  
+      }, 500)
     }
 
     console.log('Connected: ', socket.id, this.noClients)
@@ -62,6 +72,8 @@ class Manager {
   }
 
   removeClient(id) {
+    this.goodbyeCreature(this.creaturesPerClient[id])
+    delete this.creaturesPerClient[id]
     delete this.clients[id]
     console.log('disconnected: ', id, this.noClients)
 //	ooled.print('disconnected: ' + id + ' ' + this.noClients);
